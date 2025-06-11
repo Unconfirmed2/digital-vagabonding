@@ -88,8 +88,11 @@ const Index = () => {
     setFilteredGroups(filtered);
   };
 
-  const getUniqueValues = (field: keyof Group) => {
-    return [...new Set(groups.map(group => group[field]).filter(Boolean))].sort();
+  const getUniqueValues = (field: keyof Group): string[] => {
+    return [...new Set(groups.map(group => group[field])
+      .filter(Boolean)
+      .map(value => String(value)))]
+      .sort();
   };
 
   if (loading) {
