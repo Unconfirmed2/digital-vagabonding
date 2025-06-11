@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { SearchFilters } from '@/components/SearchFilters';
@@ -41,13 +40,38 @@ const Index = () => {
 
   const fetchGroups = async () => {
     try {
-      const { data, error } = await supabase
+      console.log('Fetching groups from Supabase...');
+      
+      // First try to get all groups without any ordering to see if data exists
+      const { data, error, count } = await supabase
         .from('Groups')
-        .select('*')
-        .order('Order', { ascending: true });
+        .select('*', { count: 'exact' });
 
-      if (error) throw error;
-      setGroups(data || []);
+      console.log('Supabase response:', { data, error, count });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      if (!data || data.length === 0) {
+        console.log('No groups found in database');
+        toast({
+          title: "No Data",
+          description: "No travel groups found in the database. The database might be empty or there might be access restrictions.",
+          variant: "destructive",
+        });
+      } else {
+        console.log(`Found ${data.length} groups`);
+        // Sort by Order if it exists, otherwise keep original order
+        const sortedData = data.sort((a, b) => {
+          if (a.Order && b.Order) return a.Order - b.Order;
+          if (a.Order && !b.Order) return -1;
+          if (!a.Order && b.Order) return 1;
+          return 0;
+        });
+        setGroups(sortedData);
+      }
     } catch (error) {
       console.error('Error fetching groups:', error);
       toast({
@@ -162,17 +186,32 @@ const Index = () => {
         />
 
         {/* Groups Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredGroups.map((group, index) => (
-            <GroupCard key={index} group={group} />
-          ))}
-        </div>
-
-        {filteredGroups.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No groups found matching your criteria.</p>
-            <p className="text-gray-400 mt-2">Try adjusting your search filters.</p>
+        {groups.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-lg shadow-sm">
+            <Globe className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Travel Groups Found</h3>
+            <p className="text-gray-500 text-lg mb-4">
+              Your Groups table appears to be empty.
+            </p>
+            <p className="text-gray-400 text-sm">
+              Check the browser console for more details about the database connection.
+            </p>
           </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredGroups.map((group, index) => (
+                <GroupCard key={index} group={group} />
+              ))}
+            </div>
+
+            {filteredGroups.length === 0 && groups.length > 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">No groups found matching your criteria.</p>
+                <p className="text-gray-400 mt-2">Try adjusting your search filters.</p>
+              </div>
+            )}
+          </>
         )}
       </section>
 
