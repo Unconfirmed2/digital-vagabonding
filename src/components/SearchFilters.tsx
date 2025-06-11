@@ -12,11 +12,11 @@ interface SearchFiltersProps {
   onContinentChange: (value: string) => void;
   selectedCountry: string;
   onCountryChange: (value: string) => void;
-  selectedPlatform: string;
-  onPlatformChange: (value: string) => void;
+  selectedTag: string;
+  onTagChange: (value: string) => void;
   continents: string[];
   countries: string[];
-  platforms: string[];
+  tags: string[];
 }
 
 export const SearchFilters: React.FC<SearchFiltersProps> = ({
@@ -26,11 +26,11 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   onContinentChange,
   selectedCountry,
   onCountryChange,
-  selectedPlatform,
-  onPlatformChange,
+  selectedTag,
+  onTagChange,
   continents,
   countries,
-  platforms,
+  tags,
 }) => {
   return (
     <Card className="p-6 mb-8">
@@ -89,17 +89,17 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="platform">Platform</Label>
+          <Label htmlFor="tag">Tag</Label>
           <select
-            id="platform"
-            value={selectedPlatform}
-            onChange={(e) => onPlatformChange(e.target.value)}
+            id="tag"
+            value={selectedTag}
+            onChange={(e) => onTagChange(e.target.value)}
             className="w-full h-10 px-3 py-2 border border-input bg-background text-sm ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <option value="">All Platforms</option>
-            {platforms.map((platform) => (
-              <option key={platform} value={platform}>
-                {platform}
+            <option value="">All Tags</option>
+            {tags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
               </option>
             ))}
           </select>

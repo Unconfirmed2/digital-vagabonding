@@ -3,7 +3,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, MapPin, Tag, Users } from 'lucide-react';
+import { ExternalLink, MapPin, Tag } from 'lucide-react';
 
 interface Group {
   Order: number | null;
@@ -109,18 +109,6 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
           <ExternalLink className="h-4 w-4 mr-2" />
           Join Group
         </Button>
-
-        {/* Secondary URL */}
-        {group.URL2 && (
-          <Button
-            variant="outline"
-            onClick={() => window.open(group.URL2!, '_blank', 'noopener,noreferrer')}
-            className="w-full text-sm"
-          >
-            <ExternalLink className="h-3 w-3 mr-2" />
-            Alternative Link
-          </Button>
-        )}
       </div>
     </Card>
   );

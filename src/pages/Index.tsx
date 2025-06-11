@@ -5,6 +5,7 @@ import { GroupCard } from '@/components/GroupCard';
 import { DonateButton } from '@/components/DonateButton';
 import { Loader2, Globe, Users, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 interface Group {
   Order: number | null;
@@ -23,12 +24,16 @@ interface Group {
 const Index = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
+  const [displayedGroups, setDisplayedGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContinent, setSelectedContinent] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedPlatform, setSelectedPlatform] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
+  const [showAll, setShowAll] = useState(false);
   const { toast } = useToast();
+
+  const CARDS_PER_PAGE = 9; // 3 rows × 3 cards
 
   useEffect(() => {
     fetchGroups();
@@ -36,7 +41,11 @@ const Index = () => {
 
   useEffect(() => {
     filterGroups();
-  }, [groups, searchTerm, selectedContinent, selectedCountry, selectedPlatform]);
+  }, [groups, searchTerm, selectedContinent, selectedCountry, selectedTag]);
+
+  useEffect(() => {
+    updateDisplayedGroups();
+  }, [filteredGroups, showAll]);
 
   const fetchGroups = async () => {
     try {
@@ -105,11 +114,24 @@ const Index = () => {
       filtered = filtered.filter(group => group.Country === selectedCountry);
     }
 
-    if (selectedPlatform) {
-      filtered = filtered.filter(group => group['Link Type'] === selectedPlatform);
+    if (selectedTag) {
+      filtered = filtered.filter(group => group.Tag === selectedTag);
     }
 
     setFilteredGroups(filtered);
+    setShowAll(false); // Reset pagination when filters change
+  };
+
+  const updateDisplayedGroups = () => {
+    if (showAll) {
+      setDisplayedGroups(filteredGroups);
+    } else {
+      setDisplayedGroups(filteredGroups.slice(0, CARDS_PER_PAGE));
+    }
+  };
+
+  const handleLoadMore = () => {
+    setShowAll(true);
   };
 
   const getUniqueValues = (field: keyof Group): string[] => {
@@ -136,16 +158,22 @@ const Index = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-center md:text-left">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Digital Vagabonding
-              </h1>
-              <p className="text-lg text-gray-600 flex items-center gap-2 justify-center md:justify-start">
-                <Globe className="h-5 w-5" />
-                The largest collection of groups for travelers around the world (wide web)
-              </p>
+            <div className="text-center md:text-left flex items-center gap-4">
+              <img 
+                src="/lovable-uploads/fce57509-02bb-42dd-899d-370063455a63.png" 
+                alt="Digital Vagabonding Logo" 
+                className="h-16 w-16"
+              />
+              <div>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  Digital Vagabonding
+                </h1>
+                <p className="text-lg text-gray-600 flex items-center gap-2 justify-center md:justify-start">
+                  <Globe className="h-5 w-5" />
+                  The largest collection of groups for travelers around the world (wide web)
+                </p>
+              </div>
             </div>
-            <DonateButton />
           </div>
         </div>
       </header>
@@ -164,9 +192,9 @@ const Index = () => {
             <p className="text-gray-600">Countries</p>
           </div>
           <div className="bg-white rounded-lg p-6 shadow-sm text-center">
-            <Globe className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-            <h3 className="text-2xl font-bold text-gray-900">{getUniqueValues('Link Type').length}</h3>
-            <p className="text-gray-600">Platforms</p>
+            <MapPin className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+            <h3 className="text-2xl font-bold text-gray-900">{getUniqueValues('City').length}</h3>
+            <p className="text-gray-600">Cities</p>
           </div>
         </div>
 
@@ -178,11 +206,11 @@ const Index = () => {
           onContinentChange={setSelectedContinent}
           selectedCountry={selectedCountry}
           onCountryChange={setSelectedCountry}
-          selectedPlatform={selectedPlatform}
-          onPlatformChange={setSelectedPlatform}
+          selectedTag={selectedTag}
+          onTagChange={setSelectedTag}
           continents={getUniqueValues('Continent')}
           countries={getUniqueValues('Country')}
-          platforms={getUniqueValues('Link Type')}
+          tags={getUniqueValues('Tag')}
         />
 
         {/* Groups Grid */}
@@ -199,11 +227,23 @@ const Index = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredGroups.map((group, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {displayedGroups.map((group, index) => (
                 <GroupCard key={index} group={group} />
               ))}
             </div>
+
+            {/* Load More Button */}
+            {!showAll && filteredGroups.length > CARDS_PER_PAGE && (
+              <div className="text-center mb-8">
+                <Button
+                  onClick={handleLoadMore}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                >
+                  Load More Groups ({filteredGroups.length - CARDS_PER_PAGE} remaining)
+                </Button>
+              </div>
+            )}
 
             {filteredGroups.length === 0 && groups.length > 0 && (
               <div className="text-center py-12">
@@ -234,3 +274,5 @@ const Index = () => {
 };
 
 export default Index;
+
+</edits_to_apply>
