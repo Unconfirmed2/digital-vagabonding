@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { SearchFilters } from '@/components/SearchFilters';
@@ -7,6 +6,8 @@ import { DonateButton } from '@/components/DonateButton';
 import { Loader2, Globe, Users, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Link } from 'react-router-dom';
 
 interface Group {
   Order: number | null;
@@ -257,7 +258,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-white border-t mt-16">
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
+          <div className="text-center relative">
             <p className="text-gray-600 mb-4">
               Connecting travelers worldwide through community groups
             </p>
@@ -265,6 +266,17 @@ const Index = () => {
             <p className="text-sm text-gray-400 mt-4">
               Digital Vagabonding - Curated travel communities across platforms
             </p>
+            
+            {/* Subtle legal links in bottom right */}
+            <div className="absolute bottom-0 right-0 flex gap-4 text-xs text-gray-400">
+              <Link to="/terms-of-service" className="hover:text-gray-600 transition-colors">
+                Terms of Service
+              </Link>
+              <Separator orientation="vertical" className="h-3" />
+              <Link to="/privacy-policy" className="hover:text-gray-600 transition-colors">
+                Privacy Policy
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
