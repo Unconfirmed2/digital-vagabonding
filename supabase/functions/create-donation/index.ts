@@ -16,8 +16,8 @@ serve(async (req) => {
   try {
     const { amount = 500, currency = 'usd' } = await req.json();
 
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Initialize Stripe with the Live Secret Key
+    const stripe = new Stripe(Deno.env.get("Live Secret Key") || "", {
       apiVersion: "2023-10-16",
     });
 
