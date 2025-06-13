@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { SearchFilters } from '@/components/SearchFilters';
@@ -51,7 +52,6 @@ const Index = () => {
     try {
       console.log('Fetching groups from Supabase...');
       
-      // First try to get all groups without any ordering to see if data exists
       const { data, error, count } = await supabase
         .from('Groups')
         .select('*', { count: 'exact' });
@@ -72,7 +72,6 @@ const Index = () => {
         });
       } else {
         console.log(`Found ${data.length} groups`);
-        // Sort by Order if it exists, otherwise keep original order
         const sortedData = data.sort((a, b) => {
           if (a.Order && b.Order) return a.Order - b.Order;
           if (a.Order && !b.Order) return -1;
@@ -119,7 +118,7 @@ const Index = () => {
     }
 
     setFilteredGroups(filtered);
-    setShowAll(false); // Reset pagination when filters change
+    setShowAll(false);
   };
 
   const updateDisplayedGroups = () => {
@@ -274,5 +273,3 @@ const Index = () => {
 };
 
 export default Index;
-
-</edits_to_apply>
