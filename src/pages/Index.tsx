@@ -3,11 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { SearchFilters } from '@/components/SearchFilters';
 import { GroupCard } from '@/components/GroupCard';
 import { DonateButton } from '@/components/DonateButton';
-import { Loader2, Globe, Users, MapPin } from 'lucide-react';
+import { Loader2, Globe } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Link } from 'react-router-dom';
+import { MenuHeader } from '@/components/MenuHeader';
 
 interface Group {
   Order: number | null;
@@ -26,16 +27,10 @@ interface Group {
 const Index = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
-  const [displayedGroups, setDisplayedGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedContinent, setSelectedContinent] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
-  const [showAll, setShowAll] = useState(false);
   const { toast } = useToast();
-
-  const CARDS_PER_PAGE = 9; // 3 rows × 3 cards
 
   useEffect(() => {
     fetchGroups();
@@ -43,11 +38,7 @@ const Index = () => {
 
   useEffect(() => {
     filterGroups();
-  }, [groups, searchTerm, selectedContinent, selectedCountry, selectedTag]);
-
-  useEffect(() => {
-    updateDisplayedGroups();
-  }, [filteredGroups, showAll]);
+  }, [groups, searchTerm, selectedTag]);
 
   const fetchGroups = async () => {
     try {
@@ -99,19 +90,11 @@ const Index = () => {
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(group => 
-        group.Name?.toLowerCase().includes(term) ||
         group.Country?.toLowerCase().includes(term) ||
-        group.City?.toLowerCase().includes(term) ||
-        group.Tag?.toLowerCase().includes(term)
+        group.Tag?.toLowerCase().includes(term) ||
+        group.Continent?.toLowerCase().includes(term) ||
+        (group.City && group.Country && `${group.City}, ${group.Country}`.toLowerCase().includes(term))
       );
-    }
-
-    if (selectedContinent) {
-      filtered = filtered.filter(group => group.Continent === selectedContinent);
-    }
-
-    if (selectedCountry) {
-      filtered = filtered.filter(group => group.Country === selectedCountry);
     }
 
     if (selectedTag) {
@@ -119,31 +102,34 @@ const Index = () => {
     }
 
     setFilteredGroups(filtered);
-    setShowAll(false);
   };
 
-  const updateDisplayedGroups = () => {
-    if (showAll) {
-      setDisplayedGroups(filteredGroups);
-    } else {
-      setDisplayedGroups(filteredGroups.slice(0, CARDS_PER_PAGE));
-    }
-  };
-
-  const handleLoadMore = () => {
-    setShowAll(true);
-  };
-
-  const getUniqueValues = (field: keyof Group): string[] => {
+  // Helper to get unique values from a list of groups
+  const getUniqueValuesFromGroups = (groups: Group[], field: keyof Group): string[] => {
     return [...new Set(groups.map(group => group[field])
       .filter(Boolean)
       .map(value => String(value)))]
       .sort();
   };
 
+  // Compute available tags based on filtered groups (search results)
+  const availableTags = getUniqueValuesFromGroups(filteredGroups, 'Tag');
+  const continentSuggestions = getUniqueValuesFromGroups(filteredGroups, 'Continent');
+  const countrySuggestions = getUniqueValuesFromGroups(filteredGroups, 'Country');
+  const cityCountrySuggestions = Array.from(new Set(
+    filteredGroups
+      .filter(g => g.City && g.Country)
+      .map(g => `${g.City}, ${g.Country}`)
+  ));
+  const searchSuggestions = Array.from(new Set([
+    ...continentSuggestions,
+    ...countrySuggestions,
+    ...cityCountrySuggestions,
+  ])).sort();
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#F8F7FF]">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
           <p className="text-gray-600">Loading travel groups...</p>
@@ -153,130 +139,128 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-center md:text-left flex items-center gap-4">
-              <img 
-                src="/lovable-uploads/fce57509-02bb-42dd-899d-370063455a63.png" 
-                alt="Digital Vagabonding Logo" 
-                className="h-16 w-16"
+    <div className="min-h-screen w-full bg-[#F8F7FF] flex flex-col">
+      {/* Fixed header */}
+      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fffef5]">
+        <div className="w-full px-[5vw]">
+          <div className="flex items-center justify-between py-3">
+            <div className="flex items-center">
+              <img
+                src="/src/Images/Logo-noBR.png"
+                alt="Digital Vagabonding Logo"
+                className="h-10 w-10 mr-3"
+                style={{ objectFit: 'contain' }}
               />
-              <div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                  Digital Vagabonding
-                </h1>
-                <p className="text-lg text-gray-600 flex items-center gap-2 justify-center md:justify-start">
-                  <Globe className="h-5 w-5" />
-                  The largest collection of groups for travelers around the world (wide web)
-                </p>
+              <div className="flex flex-col justify-between h-10 py-0">
+                <Link to="/" className="focus:outline-none h-full flex flex-col justify-between">
+                  <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif' }}>
+                    Digital VagaBonding
+                  </span>
+                </Link>
               </div>
             </div>
+            <MenuHeader />
           </div>
         </div>
       </header>
-
-      {/* Stats */}
-      <section className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg p-6 shadow-sm text-center">
-            <Users className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <h3 className="text-2xl font-bold text-gray-900">{filteredGroups.length}</h3>
-            <p className="text-gray-600">Travel Groups</p>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow-sm text-center">
-            <MapPin className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <h3 className="text-2xl font-bold text-gray-900">{getUniqueValues('Country').length}</h3>
-            <p className="text-gray-600">Countries</p>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow-sm text-center">
-            <MapPin className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-            <h3 className="text-2xl font-bold text-gray-900">{getUniqueValues('City').length}</h3>
-            <p className="text-gray-600">Cities</p>
-          </div>
-        </div>
-
-        {/* Search and Filters */}
-        <SearchFilters
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          selectedContinent={selectedContinent}
-          onContinentChange={setSelectedContinent}
-          selectedCountry={selectedCountry}
-          onCountryChange={setSelectedCountry}
-          selectedTag={selectedTag}
-          onTagChange={setSelectedTag}
-          continents={getUniqueValues('Continent')}
-          countries={getUniqueValues('Country')}
-          tags={getUniqueValues('Tag')}
-        />
-
-        {/* Groups Grid */}
-        {groups.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-            <Globe className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Travel Groups Found</h3>
-            <p className="text-gray-500 text-lg mb-4">
-              Your Groups table appears to be empty.
-            </p>
-            <p className="text-gray-400 text-sm">
-              Check the browser console for more details about the database connection.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {displayedGroups.map((group, index) => (
-                <GroupCard key={index} group={group} />
-              ))}
+      {/* Spacer for fixed header */}
+      <div className="flex-1 w-full px-[5vw]" style={{ paddingTop: '80px', paddingBottom: '90px' }}>
+        <section className="w-full max-w-6xl mx-auto flex flex-col gap-10">
+          {/* Combined Filters + Stats Card, no border, less vertical space */}
+          <div className="rounded-2xl shadow-lg p-3 md:p-6 flex flex-col gap-1 items-start w-full">
+            <div className="w-full flex flex-col items-start mb-0.5">
+              <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
+                The largest collection of groups for travelers from around the world (wide web)
+              </p>
+              <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
+                Find your community...wherever you are
+              </p>
             </div>
-
-            {/* Load More Button */}
-            {!showAll && filteredGroups.length > CARDS_PER_PAGE && (
-              <div className="text-center mb-8">
-                <Button
-                  onClick={handleLoadMore}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-                >
-                  Load More Groups ({filteredGroups.length - CARDS_PER_PAGE} remaining)
-                </Button>
+            <div className="flex flex-col md:flex-row w-full gap-1 md:gap-2 items-center justify-center md:justify-between md:items-center">
+              {/* Filters/search and counts, all vertically centered and aligned */}
+              <div className="flex-1 w-full flex items-center">
+                <SearchFilters
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  selectedTag={selectedTag}
+                  onTagChange={setSelectedTag}
+                  tags={availableTags}
+                  suggestions={searchSuggestions}
+                />
               </div>
-            )}
-
-            {filteredGroups.length === 0 && groups.length > 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">No groups found matching your criteria.</p>
-                <p className="text-gray-400 mt-2">Try adjusting your search filters.</p>
+              <div className="flex flex-row gap-0 md:gap-2 min-w-[160px] md:min-w-[220px] justify-center md:justify-end items-center self-center h-full">
+                <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
+                  <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{filteredGroups.length}</span>
+                  <span className="text-s font-medium text-[#1D1818] mt-0">Groups</span>
+                </div>
+                <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
+                  <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{getUniqueValuesFromGroups(filteredGroups, 'Country').length}</span>
+                  <span className="text-s font-medium text-[#1D1818] mt-0">Countries</span>
+                </div>
+                <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
+                  <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{getUniqueValuesFromGroups(filteredGroups, 'City').length}</span>
+                  <span className="text-s font-medium text-[#1D1818] mt-0">Cities</span>
+                </div>
               </div>
-            )}
-          </>
-        )}
-      </section>
+            </div>
+          </div>
 
+          {/* Groups Grid */}
+          <div className="w-full">
+            {groups.length === 0 ? (
+              <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
+                <Globe className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">No Travel Groups Found</h3>
+                <p className="text-gray-500 text-lg mb-4">
+                  Your Groups table appears to be empty.
+                </p>
+                <p className="text-gray-400 text-sm">
+                  Check the browser console for more details about the database connection.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                  {filteredGroups.map((group, index) => (
+                    <GroupCard key={index} group={group} />
+                  ))}
+                </div>
+
+                {filteredGroups.length === 0 && groups.length > 0 && (
+                  <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
+                    <p className="text-gray-500 text-lg">No groups found matching your criteria.</p>
+                    <p className="text-gray-400 mt-2">Try adjusting your search filters.</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+      </div>
       {/* Footer */}
-      <footer className="bg-white border-t mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center relative">
-            <p className="text-gray-600 mb-4">
-              Connecting travelers worldwide through community groups
-            </p>
+      <footer className="rounded-t-2xl w-full border-t border-[#e0def7] h-[56px] md:h-[64px] bg-[#fffef5] fixed bottom-0 left-0 z-40 text-xs md:text-base">
+        <div className="container mx-auto px-2 md:px-4 py-3 md:py-6 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 relative h-full">
+          {/* Donate button on the left */}
+          <div className="flex-shrink-0 flex items-center w-full md:w-auto justify-center md:justify-start mb-1 md:mb-0">
             <DonateButton />
-            <p className="text-sm text-gray-400 mt-4">
-              Digital Vagabonding - Curated travel communities across platforms
-            </p>
-            
-            {/* Subtle legal links in bottom right */}
-            <div className="absolute bottom-0 right-0 flex gap-4 text-xs text-gray-400">
-              <Link to="/terms-of-service" className="hover:text-gray-600 transition-colors">
-                Terms of Service
-              </Link>
-              <Separator orientation="vertical" className="h-3" />
-              <Link to="/privacy-policy" className="hover:text-gray-600 transition-colors">
-                Privacy Policy
-              </Link>
-            </div>
+          </div>
+          {/* Center text */}
+          <div className="flex-1 text-center text-gray-700 text-xs md:text-base font-medium">
+            Connecting travelers worldwide through community groups
+          </div>
+          {/* Legal links on the right */}
+          <div className="flex-shrink-0 flex items-center gap-2 md:gap-4 w-full md:w-auto justify-center md:justify-end mt-1 md:mt-0 text-xs text-gray-400">
+            <Link to="/terms-of-service" className="hover:text-gray-600 transition-colors">
+              Terms of Service
+            </Link>
+            <Separator orientation="vertical" className="h-3" />
+            <Link to="/privacy-policy" className="hover:text-gray-600 transition-colors">
+              Privacy Policy
+            </Link>
+            <Separator orientation="vertical" className="h-3" />
+            <a href="/sitemap.xml" className="hover:text-gray-600 transition-colors" target="_blank" rel="noopener noreferrer">
+              Sitemap
+            </a>
           </div>
         </div>
       </footer>
