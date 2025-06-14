@@ -23,7 +23,7 @@ export const MenuHeader: React.FC = () => {
   return (
     <div className="relative">
       <Button variant="ghost" size="icon" onClick={() => setOpen((v) => !v)} className="ml-2">
-        {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        {open ? <X className="h-12 w-12" /> : <Menu className="h-12 w-12" />}
       </Button>
       {open && (
         <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50 p-4 flex flex-col gap-4">
