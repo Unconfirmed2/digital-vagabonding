@@ -150,7 +150,7 @@ const PrivacyPolicy = () => {
               <p>If you have any questions about this Privacy Policy, You can contact us:</p>
               <ul className="list-disc ml-6">
                 <li>By email: <a href="mailto:support@digitalvagabond.ing" className="text-blue-600 underline">support@digitalvagabond.ing</a></li>
-                <li>By visiting this page on our website: <a href="https://www.digitalvagabond.ing/privacy" className="text-blue-600 underline">https://www.digitalvagabond.ing/privacy</a></li>
+                <li>By visiting this page on our website: <a href="https://unconfirmed2.github.io/privacy" className="text-blue-600 underline">https://unconfirmed2.github.io/privacy</a></li>
               </ul>
             </div>
           </div>
