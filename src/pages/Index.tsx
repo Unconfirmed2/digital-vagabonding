@@ -146,7 +146,7 @@ const Index = () => {
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center">
               <img
-                src="/src/Images/Logo-noBR.png"
+                src="/digital-vagabonding/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
                 className="h-10 w-10 mr-3"
                 style={{ objectFit: 'contain' }}
