@@ -96,7 +96,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             )}
           </div>
         </div>
-        <div className="relative">
+        <div className="relative flex w-full">
           <select
             id="tag"
             value={selectedTag}
@@ -125,6 +125,15 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
           )}
         </div>
+      </div>
+      {/* Responsive filter button for mobile */}
+      <div className="block md:hidden mt-2">
+        <button
+          className="w-full bg-blue-600 text-white py-2 rounded-md text-base font-semibold shadow hover:bg-blue-700 transition-colors"
+          onClick={() => inputRef.current?.focus()}
+        >
+          Filter
+        </button>
       </div>
     </div>
   );

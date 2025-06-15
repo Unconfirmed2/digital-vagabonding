@@ -18,7 +18,7 @@ const PrivacyPolicy = () => {
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
               />
-              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif' }}>
+              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#2d2d2d' }}>
                 Digital VagaBonding
               </span>
             </Link>

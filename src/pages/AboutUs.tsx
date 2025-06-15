@@ -17,7 +17,7 @@ const AboutUs = () => (
               className="h-10 w-10 mr-3 cursor-pointer"
               style={{ objectFit: 'contain' }}
             />
-            <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif' }}>
+            <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#2d2d2d' }}>
               Digital VagaBonding
             </span>
           </Link>
@@ -34,7 +34,7 @@ const AboutUs = () => (
       <div className="max-w-4xl mx-auto">
         <div className="rounded-lg shadow-sm p-0 md:p-8 mt-6 bg-transparent">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Welcome to Digital VagaBonding</h2>
-          <p className="mb-4">At Digital Vagabonding, we're passionate about bridging the gap between expats, travelers, and digital nomads and the vibrant local communities they live in or travel to.</p>
+          <p className="mb-4">At Digital VagaBonding, we're passionate about bridging the gap between expats, travelers, and digital nomads and the vibrant local communities they live in or travel to.</p>
           <h2 className="text-lg font-bold mt-8 mb-2">Our Mission</h2>
           <p className="mb-4">Our mission is simple: to make the world a smaller, more connected place. We believe that real, meaningful connections can transform a standard trip into a life-changing journey. To facilitate this, we've meticulously gathered and curated Facebook, Telegram, and WhatsApp groups for each city, serving as gateways to local insights, friendships, and experiences.</p>
           <h2 className="text-lg font-bold mt-8 mb-2">What We Do</h2>

@@ -91,7 +91,7 @@ const Index = () => {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(group => 
         group.Country?.toLowerCase().includes(term) ||
-        group.Tag?.toLowerCase().includes(term) ||
+        group.City?.toLowerCase().includes(term) ||
         group.Continent?.toLowerCase().includes(term) ||
         (group.City && group.Country && `${group.City}, ${group.Country}`.toLowerCase().includes(term))
       );
@@ -121,11 +121,17 @@ const Index = () => {
       .filter(g => g.City && g.Country)
       .map(g => `${g.City}, ${g.Country}`)
   ));
+  // Prioritize country suggestions at the top
   const searchSuggestions = Array.from(new Set([
-    ...continentSuggestions,
     ...countrySuggestions,
+    ...continentSuggestions,
     ...cityCountrySuggestions,
-  ])).sort();
+  ])).sort((a, b) => {
+    // If a is a country and b is not, a comes first
+    if (countrySuggestions.includes(a) && !countrySuggestions.includes(b)) return -1;
+    if (!countrySuggestions.includes(a) && countrySuggestions.includes(b)) return 1;
+    return a.localeCompare(b);
+  });
 
   if (loading) {
     return (
