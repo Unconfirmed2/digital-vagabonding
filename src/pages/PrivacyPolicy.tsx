@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen w-full bg-[#F8F7FF] flex flex-col">
       {/* Main header */}
-      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fffef5]">
+      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
           <div className="flex items-center justify-between py-3">
             <Link to="/" className="flex items-center focus:outline-none h-10">
@@ -36,7 +36,7 @@ const PrivacyPolicy = () => {
           <div className="mb-6"></div>
           <div className="rounded-lg shadow-sm p-0 md:p-8 bg-transparent">
             {/* Removed Privacy Policy section title */}
-            { <h2 className="text-xl font-bold text-gray-900 mb-6">Privacy Policy</h2> }
+            { <h2 className="text-3xl font-bold text-gray-900 mb-6">Privacy Policy</h2> }
             <div className="prose max-w-none text-gray-700 space-y-6">
               <p className="text-sm text-gray-500 mb-6">Last updated February 07, 2024</p>
               <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
@@ -157,7 +157,7 @@ const PrivacyPolicy = () => {
         </div>
       </div>
       {/* Footer */}
-      <footer className="rounded-t-2xl w-full border-t border-[#e0def7] h-[56px] md:h-[64px] bg-[#fffef5] fixed bottom-0 left-0 z-40 text-xs md:text-base">
+      <footer className="rounded-t-2xl w-full border-t border-[#e0def7] h-[56px] md:h-[64px] bg-[#fbf5f7] fixed bottom-0 left-0 z-40 text-xs md:text-base">
         <div className="container mx-auto px-2 md:px-4 py-3 md:py-6 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 relative h-full">
           <div className="flex-shrink-0 flex items-center w-full md:w-auto justify-center md:justify-start mb-1 md:mb-0">
             <DonateButton />

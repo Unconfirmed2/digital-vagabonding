@@ -8,7 +8,7 @@ const TermsOfService = () => {
   return (
     <div className="min-h-screen w-full bg-[#F8F7FF] flex flex-col">
       {/* Main header */}
-      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fffef5]">
+      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
           <div className="flex items-center justify-between py-3">
             <Link to="/" className="flex items-center focus:outline-none h-10">
@@ -152,7 +152,7 @@ const TermsOfService = () => {
         </div>
       </div>
       {/* Footer */}
-      <footer className="rounded-t-2xl w-full border-t border-[#e0def7] h-[56px] md:h-[64px] bg-[#fffef5] fixed bottom-0 left-0 z-40 text-xs md:text-base">
+      <footer className="rounded-t-2xl w-full border-t border-[#e0def7] h-[56px] md:h-[64px] bg-[#fbf5f7] fixed bottom-0 left-0 z-40 text-xs md:text-base">
         <div className="container mx-auto px-2 md:px-4 py-3 md:py-6 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 relative h-full">
           <div className="flex-shrink-0 flex items-center w-full md:w-auto justify-center md:justify-start mb-1 md:mb-0">
             <DonateButton />
