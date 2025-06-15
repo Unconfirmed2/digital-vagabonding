@@ -18,7 +18,7 @@ const TermsOfService = () => {
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
               />
-              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#2d2d2d' }}>
+              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#064e6b' }}>
                 Digital VagaBonding
               </span>
             </Link>
@@ -29,14 +29,12 @@ const TermsOfService = () => {
       {/* Spacer for fixed header */}
       <div className="container mx-auto px-4 flex-1 w-full" style={{ paddingTop: '80px' }}>
         {/* Page title below header, aligned and sized like body text */}
-        <div className="flex items-center mb-6 max-w-4xl mx-auto">
-          {/* <h1 className="text-xl font-bold text-gray-900 ml-2">Terms of Service</h1> */}
-        </div>
+        
         <div className="max-w-4xl mx-auto">
           <div className="mb-6"></div>
           <div className="rounded-lg shadow-sm p-0 md:p-8 bg-transparent">
             {/* Removed Terms of Service section title */}
-            {/* <h2 className="text-xl font-bold text-gray-900 mb-2">Terms of Service</h2> */}
+            { <h2 className="text-xl font-bold text-gray-900 mb-2">Terms of Service</h2> }
             <p className="text-sm text-gray-500 mb-6">
               Last updated February 7, 2024
             </p>

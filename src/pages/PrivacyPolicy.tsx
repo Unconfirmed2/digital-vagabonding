@@ -18,7 +18,7 @@ const PrivacyPolicy = () => {
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
               />
-              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#2d2d2d' }}>
+              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#064e6b' }}>
                 Digital VagaBonding
               </span>
             </Link>
@@ -36,7 +36,7 @@ const PrivacyPolicy = () => {
           <div className="mb-6"></div>
           <div className="rounded-lg shadow-sm p-0 md:p-8 bg-transparent">
             {/* Removed Privacy Policy section title */}
-            {/* <h2 className="text-xl font-bold text-gray-900 mb-6">Privacy Policy</h2> */}
+            { <h2 className="text-xl font-bold text-gray-900 mb-6">Privacy Policy</h2> }
             <div className="prose max-w-none text-gray-700 space-y-6">
               <p className="text-sm text-gray-500 mb-6">Last updated February 07, 2024</p>
               <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>

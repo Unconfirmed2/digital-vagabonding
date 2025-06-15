@@ -62,7 +62,7 @@ const Login: React.FC = () => {
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
               />
-              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#2d2d2d' }}>
+              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#064e6b' }}>
                 Digital VagaBonding
               </span>
             </Link>
@@ -71,13 +71,12 @@ const Login: React.FC = () => {
         </div>
       </header>
       {/* Spacer for fixed header */}
-      <div style={{ paddingTop: 80, width: '100%' }}>
+      <div style={{ paddingTop: 0, width: '100%' }}>
         {/* Page title below header */}
         <div className="flex items-center mb-6 max-w-4xl mx-auto px-4">
-          <h1 className="text-2xl font-bold text-gray-900 ml-2">Sign In / Register</h1>
         </div>
         <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm flex flex-col gap-4 mx-auto">
-          <h2 className="text-xl font-bold text-center mb-2">Sign In / Register</h2>
+          <h2 className="text-xl font-bold text-center mb-2">Sign In</h2>
           {!user ? (
             <>
               <form onSubmit={handleEmailRegister} className="flex flex-col gap-2">
