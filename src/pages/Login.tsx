@@ -18,9 +18,12 @@ const Login: React.FC = () => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        navigate('/account');
+      }
     });
     return () => { listener?.subscription.unsubscribe(); };
-  }, []);
+  }, [navigate]);
 
   const handleEmailRegister = async (e: React.FormEvent) => {
     e.preventDefault();
