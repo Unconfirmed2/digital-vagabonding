@@ -290,10 +290,10 @@ const Index = () => {
             {/* Removed unlock x groups notification */}
             <div className="rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] p-3 md:p-6 flex flex-col gap-1 items-start w-full transition-shadow duration-200">
               <div className="w-full flex flex-col items-start mb-0.5">
-                <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
+                <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#1D1818] leading-snug text-left">
                   The largest collection of groups for travelers from around the world (wide web)
                 </p>
-                <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
+                <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#1D1818] leading-snug text-left">
                   Find your community...wherever you are
                 </p>
               </div>
