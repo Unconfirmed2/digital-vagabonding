@@ -152,7 +152,7 @@ const Index = () => {
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center">
               <img
-                src="/digital-vagabonding/Logo-noBR.png"
+                src="Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
                 className="h-10 w-10 mr-3"
                 style={{ objectFit: 'contain' }}
@@ -264,7 +264,7 @@ const Index = () => {
               Privacy Policy
             </Link>
             <Separator orientation="vertical" className="h-3" />
-            <a href="/sitemap.xml" className="hover:text-gray-600 transition-colors" target="_blank" rel="noopener noreferrer">
+            <a href="sitemap.xml" className="hover:text-gray-600 transition-colors" target="_blank" rel="noopener noreferrer">
               Sitemap
             </a>
           </div>

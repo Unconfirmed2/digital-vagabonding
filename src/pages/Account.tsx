@@ -88,7 +88,7 @@ const Account: React.FC = () => {
           <div className="flex items-center justify-between py-3">
             <Link to="/" className="flex items-center focus:outline-none h-10">
               <img
-                src="/digital-vagabonding/Logo-noBR.png"
+                src="Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
@@ -175,7 +175,7 @@ const Account: React.FC = () => {
               Privacy Policy
             </Link>
             <Separator orientation="vertical" className="h-3" />
-            <a href="/sitemap.xml" className="hover:text-gray-600 transition-colors" target="_blank" rel="noopener noreferrer">
+            <a href="sitemap.xml" className="hover:text-gray-600 transition-colors" target="_blank" rel="noopener noreferrer">
               Sitemap
             </a>
           </div>
