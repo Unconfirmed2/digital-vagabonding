@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MenuHeader } from '@/components/MenuHeader';
 import { DonateButton } from '@/components/DonateButton';
 import { Separator } from '@/components/ui/separator';
+import { AnalyticsAndConsent } from '@/components/AnalyticsAndConsent';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -60,7 +61,7 @@ const Login: React.FC = () => {
           <div className="flex items-center justify-between py-3">
             <Link to="/" className="flex items-center focus:outline-none h-10">
               <img
-                src="Logo-noBR.png"
+                src="/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
@@ -116,6 +117,7 @@ const Login: React.FC = () => {
           )}
         </div>
       </div>
+      <AnalyticsAndConsent />
       {/* Footer */}
       <footer className="rounded-t-2xl w-full border-t border-[#e0def7] h-[56px] md:h-[64px] bg-[#fbf5f7] fixed bottom-0 left-0 z-40 text-xs md:text-base">
         <div className="container mx-auto px-2 md:px-4 py-3 md:py-6 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 relative h-full">

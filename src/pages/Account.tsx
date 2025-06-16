@@ -5,6 +5,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { MenuHeader } from '@/components/MenuHeader';
 import { DonateButton } from '@/components/DonateButton';
 import { Separator } from '@/components/ui/separator';
+import { createStripeCheckoutSession, cancelStripeSubscription } from '@/lib/stripeClient';
+import { hasActiveSubscription } from '@/lib/subscriptionAccess';
+import { AnalyticsAndConsent } from '@/components/AnalyticsAndConsent';
 
 const Account: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -16,15 +19,22 @@ const Account: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [subscriptionActive, setSubscriptionActive] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
       setEmail(data.user?.email || '');
+      checkSubscription(data.user?.id);
     });
     // Optionally fetch first/last name from a profile table if you have one
   }, []);
+
+  const checkSubscription = async (userId: string) => {
+    const active = await hasActiveSubscription(userId);
+    setSubscriptionActive(active);
+  };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +77,18 @@ const Account: React.FC = () => {
     setError('Account deletion must be handled by an admin or secure backend function.');
   };
 
+  const handleSubscribe = async () => {
+    if (!user) return;
+    const url = await createStripeCheckoutSession(user.id);
+    window.open(url, '_blank');
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!user) return;
+    await cancelStripeSubscription(user.id);
+    setSubscriptionActive(false);
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7FF]">
@@ -88,7 +110,7 @@ const Account: React.FC = () => {
           <div className="flex items-center justify-between py-3">
             <Link to="/" className="flex items-center focus:outline-none h-10">
               <img
-                src="Logo-noBR.png"
+                src="/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
@@ -156,6 +178,21 @@ const Account: React.FC = () => {
           {error && <div className="text-red-500 text-xs">{error}</div>}
           {success && <div className="text-green-600 text-xs">{success}</div>}
         </div>
+        {/* Subscription section */}
+        <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm flex flex-col gap-4 mx-auto mt-4">
+          <h2 className="text-xl font-bold text-center mb-2">Subscription</h2>
+          {subscriptionActive ? (
+            <>
+              <div className="text-green-600 text-center mb-2">Your subscription is active.</div>
+              <Button onClick={handleCancelSubscription} className="w-full" variant="destructive">Cancel Subscription</Button>
+            </>
+          ) : (
+            <>
+              <div className="text-yellow-600 text-center mb-2">You do not have an active subscription.</div>
+              <Button onClick={handleSubscribe} className="w-full">Subscribe for $10/year</Button>
+            </>
+          )}
+        </div>
       </div>
       {/* Footer */}
       <footer className="rounded-t-2xl w-full border-t border-[#e0def7] h-[56px] md:h-[64px] bg-[#fbf5f7] fixed bottom-0 left-0 z-40 text-xs md:text-base">
@@ -181,6 +218,7 @@ const Account: React.FC = () => {
           </div>
         </div>
       </footer>
+      <AnalyticsAndConsent />
     </div>
   );
 };

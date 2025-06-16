@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { AnalyticsAndConsent } from "@/components/AnalyticsAndConsent";
 
 const NotFound = () => {
   const location = useLocation();
@@ -39,6 +40,7 @@ const NotFound = () => {
           </a>
         </div>
       </div>
+      <AnalyticsAndConsent />
     </div>
   );
 };

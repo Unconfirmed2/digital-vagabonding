@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { MenuHeader } from '@/components/MenuHeader';
 import { DonateButton } from '@/components/DonateButton';
 import { Separator } from '@/components/ui/separator';
+import { AnalyticsAndConsent } from '@/components/AnalyticsAndConsent';
 
 const DonationSuccess = () => {
   return (
@@ -16,7 +17,7 @@ const DonationSuccess = () => {
           <div className="flex items-center justify-between py-3">
             <Link to="/" className="flex items-center focus:outline-none h-10">
               <img
-                src="/digital-vagabonding/Logo-noBR.png"
+                src="/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
                 className="h-10 w-10 mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
@@ -80,6 +81,7 @@ const DonationSuccess = () => {
           </div>
         </div>
       </footer>
+      <AnalyticsAndConsent />
     </div>
   );
 };

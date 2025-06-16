@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { SearchFilters } from '@/components/SearchFilters';
 import { GroupCard } from '@/components/GroupCard';
@@ -9,6 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Link } from 'react-router-dom';
 import { MenuHeader } from '@/components/MenuHeader';
+import { filterGroupsByAccess, countLockedCities, countLockedGroups } from '@/lib/subscriptionAccess';
+import { hasActiveSubscription } from '@/lib/subscriptionAccess';
+import { ALLOW_VIEW_ALL_CITIES } from '@/config/subscriptionConfig';
+import { AnalyticsAndConsent } from '@/components/AnalyticsAndConsent';
 
 interface Group {
   Order: number | null;
@@ -36,19 +40,43 @@ const Index = () => {
     return stored ? JSON.parse(stored) : [];
   });
   const [showLikedOnly, setShowLikedOnly] = useState(false);
+  const [subscriptionActive, setSubscriptionActive] = useState(false);
+  const [lockedCities, setLockedCities] = useState(0);
+  const [lockedGroups, setLockedGroups] = useState(0);
+  const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchGroups();
+    checkSubscription();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
   }, []);
 
   useEffect(() => {
     filterGroups();
-  }, [groups, searchTerm, selectedTag, showLikedOnly, likedGroups]);
+  }, [groups, searchTerm, selectedTag, showLikedOnly, likedGroups, subscriptionActive]);
 
   useEffect(() => {
     localStorage.setItem('likedGroups', JSON.stringify(likedGroups));
   }, [likedGroups]);
+
+  useEffect(() => {
+    // Inject Google AdSense script
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4720939090989878';
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  const checkSubscription = async () => {
+    const user = supabase.auth.user();
+    const active = await hasActiveSubscription(user?.id);
+    setSubscriptionActive(active);
+  };
 
   const fetchGroups = async () => {
     try {
@@ -81,6 +109,8 @@ const Index = () => {
           return 0;
         });
         setGroups(sortedData);
+        setLockedCities(countLockedCities(sortedData));
+        setLockedGroups(countLockedGroups(sortedData));
       }
     } catch (error) {
       console.error('Error fetching groups:', error);
@@ -124,7 +154,7 @@ const Index = () => {
     if (showLikedOnly) {
       filtered = filtered.filter(group => likedGroups.includes(group.Name + group.URL));
     }
-    setFilteredGroups(filtered);
+    setFilteredGroups(filterGroupsByAccess(filtered, subscriptionActive));
   };
 
   // Helper to get unique values from a list of groups
@@ -156,6 +186,66 @@ const Index = () => {
     return a.localeCompare(b);
   });
 
+  // Group groups by country, then sort by city, then name (for display)
+  const groupedByCountry = filteredGroups.reduce((acc, group) => {
+    const country = group.Country || 'Other';
+    if (!acc[country]) acc[country] = [];
+    acc[country].push(group);
+    return acc;
+  }, {} as Record<string, Group[]>);
+
+  // Group ALL groups by country for locked count logic (before filtering by access)
+  const allGroupedByCountry = groups.reduce((acc, group) => {
+    const country = group.Country || 'Other';
+    if (!acc[country]) acc[country] = [];
+    acc[country].push(group);
+    return acc;
+  }, {} as Record<string, Group[]>);
+
+  // Sort countries alphabetically
+  const sortedCountries = Object.keys(groupedByCountry).sort();
+  // For each country, sort groups by city, then name
+  sortedCountries.forEach(country => {
+    groupedByCountry[country].sort((a, b) => {
+      const cityA = a.City || '';
+      const cityB = b.City || '';
+      if (cityA.toLowerCase() < cityB.toLowerCase()) return -1;
+      if (cityA.toLowerCase() > cityB.toLowerCase()) return 1;
+      const nameA = a.Name || '';
+      const nameB = b.Name || '';
+      return nameA.localeCompare(nameB);
+    });
+  });
+
+  // Helper: Get top 5 cities by group count, excluding countrywide
+  const getTopCities = (groups: Group[]) => {
+    const cityCounts: Record<string, { count: number; country: string | null }> = {};
+    groups.forEach(g => {
+      if (g.City && g.City.toLowerCase() !== 'countrywide') {
+        const key = g.City.trim().toLowerCase();
+        if (!cityCounts[key]) cityCounts[key] = { count: 0, country: g.Country };
+        cityCounts[key].count++;
+      }
+    });
+    return Object.entries(cityCounts)
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 5)
+      .map(([city, data]) => ({ city, count: data.count, country: data.country }));
+  };
+
+  const topCities = getTopCities(groups);
+
+  // Map city names to hero images (normalize for matching)
+  const cityImageMap: Record<string, string> = {
+    'bali': '/bali.jpeg',
+    'medellin': '/Medellin.jpeg',
+    'mexico city': '/Mexico City.jpeg',
+    'rio de janeiro': '/Rio do Janiero.jpeg',
+    'tulum': '/Playa del Carmen Tulum.jpg', // fallback to this for Tulum/Playa
+  };
+
+  const [cityFilter, setCityFilter] = useState<string | null>(null);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7FF]">
@@ -175,7 +265,7 @@ const Index = () => {
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center">
               <img
-                src="Logo-noBR.png"
+                src="/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
                 className="h-10 w-10 mr-3"
                 style={{ objectFit: 'contain' }}
@@ -195,53 +285,106 @@ const Index = () => {
       {/* Spacer for fixed header */}
       <div className="flex-1 w-full px-[5vw]" style={{ paddingTop: '80px', paddingBottom: '90px' }}>
         <section className="w-full max-w-6xl mx-auto flex flex-col gap-10">
-          {/* Combined Filters + Stats Card, no border, less vertical space */}
-          <div className="rounded-2xl shadow-lg p-3 md:p-6 flex flex-col gap-1 items-start w-full">
-            <div className="w-full flex flex-col items-start mb-0.5">
-              <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
-                The largest collection of groups for travelers from around the world (wide web)
-              </p>
-              <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
-                Find your community...wherever you are
-              </p>
+          <div className="relative w-full">
+            {/* Tab notification for locked groups, only if ALLOW_VIEW_ALL_CITIES is false */}
+            {/* Removed unlock x groups notification */}
+            <div className="rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] p-3 md:p-6 flex flex-col gap-1 items-start w-full transition-shadow duration-200">
+              <div className="w-full flex flex-col items-start mb-0.5">
+                <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
+                  The largest collection of groups for travelers from around the world (wide web)
+                </p>
+                <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#000000] leading-snug text-left">
+                  Find your community...wherever you are
+                </p>
+              </div>
+              <div className="flex flex-col md:flex-row w-full gap-1 md:gap-2 items-center justify-center md:justify-between md:items-center">
+                {/* Filters/search and counts, all vertically centered and aligned */}
+                <div className="flex-1 w-full flex items-center">
+                  <SearchFilters
+                    searchTerm={searchTerm}
+                    onSearchChange={val => {
+                      setSearchTerm(val);
+                      if (!val) setCityFilter(null);
+                    }}
+                    selectedTag={selectedTag}
+                    onTagChange={setSelectedTag}
+                    tags={availableTags}
+                    suggestions={searchSuggestions}
+                  />
+                  {/* Liked filter button */}
+                  <Button
+                    type="button"
+                    variant={showLikedOnly ? 'default' : 'outline'}
+                    className="ml-2 flex items-center gap-1"
+                    onClick={() => setShowLikedOnly((v) => !v)}
+                    aria-pressed={showLikedOnly}
+                  >
+                    <span>Liked</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill={showLikedOnly ? 'red' : 'none'} viewBox="0 0 24 24" stroke="currentColor" className={`h-5 w-5 ${showLikedOnly ? 'text-red-500' : 'text-gray-400'}`}> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" /></svg>
+                  </Button>
+                </div>
+                <div className="flex flex-row gap-0 md:gap-2 min-w-[160px] md:min-w-[220px] justify-center md:justify-end items-center self-center h-full">
+                  <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
+                    <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{filteredGroups.length}</span>
+                    <span className="text-s font-medium text-[#1D1818] mt-0">Groups</span>
+                  </div>
+                  <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
+                    <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{getUniqueValuesFromGroups(filteredGroups, 'Country').length}</span>
+                    <span className="text-s font-medium text-[#1D1818] mt-0">Countries</span>
+                  </div>
+                  <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
+                    <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{getUniqueValuesFromGroups(filteredGroups, 'City').length}</span>
+                    <span className="text-s font-medium text-[#1D1818] mt-0">Cities</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col md:flex-row w-full gap-1 md:gap-2 items-center justify-center md:justify-between md:items-center">
-              {/* Filters/search and counts, all vertically centered and aligned */}
-              <div className="flex-1 w-full flex items-center">
-                <SearchFilters
-                  searchTerm={searchTerm}
-                  onSearchChange={setSearchTerm}
-                  selectedTag={selectedTag}
-                  onTagChange={setSelectedTag}
-                  tags={availableTags}
-                  suggestions={searchSuggestions}
-                />
-                {/* Liked filter button */}
-                <Button
-                  type="button"
-                  variant={showLikedOnly ? 'default' : 'outline'}
-                  className="ml-2 flex items-center gap-1"
-                  onClick={() => setShowLikedOnly((v) => !v)}
-                  aria-pressed={showLikedOnly}
-                >
-                  <span>Liked</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill={showLikedOnly ? 'red' : 'none'} viewBox="0 0 24 24" stroke="currentColor" className={`h-5 w-5 ${showLikedOnly ? 'text-red-500' : 'text-gray-400'}`}> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" /></svg>
-                </Button>
-              </div>
-              <div className="flex flex-row gap-0 md:gap-2 min-w-[160px] md:min-w-[220px] justify-center md:justify-end items-center self-center h-full">
-                <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
-                  <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{filteredGroups.length}</span>
-                  <span className="text-s font-medium text-[#1D1818] mt-0">Groups</span>
-                </div>
-                <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
-                  <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{getUniqueValuesFromGroups(filteredGroups, 'Country').length}</span>
-                  <span className="text-s font-medium text-[#1D1818] mt-0">Countries</span>
-                </div>
-                <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
-                  <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{getUniqueValuesFromGroups(filteredGroups, 'City').length}</span>
-                  <span className="text-s font-medium text-[#1D1818] mt-0">Cities</span>
-                </div>
-              </div>
+          </div>
+
+          {/* Most Popular Cities Section */}
+          <div className="w-full mb-2 flex flex-col items-center">
+            <h2 className="text-2xl font-bold text-[#064e68] mb-4">Most Popular Cities</h2>
+            <div className="w-full flex flex-row gap-4 mb-8 justify-center">
+              {topCities.map((city, idx) => {
+                // Normalize city name for matching
+                const cityKey = city.city.toLowerCase();
+                let heroImg = '/placeholder.svg';
+                if (cityKey.includes('bali')) heroImg = cityImageMap['bali'];
+                else if (cityKey.includes('medellin')) heroImg = cityImageMap['medellin'];
+                else if (cityKey.includes('mexico')) heroImg = cityImageMap['mexico city'];
+                else if (cityKey.includes('rio')) heroImg = cityImageMap['rio de janeiro'];
+                else if (cityKey.includes('tulum') || cityKey.includes('playa')) heroImg = cityImageMap['tulum'];
+                // Capitalize city name, special case for PDC/Tulum
+                let displayCity = city.city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                if (cityKey.includes('tulum') || cityKey.includes('playa')) displayCity = 'PDC/Tulum';
+                return (
+                  <div
+                    key={city.city}
+                    className={`flex-1 min-w-[120px] max-w-[200px] bg-white rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] transition-shadow duration-200 cursor-pointer border-2 ${cityFilter === city.city ? 'border-[hsl(var(--brand))]' : 'border-transparent'}`}
+                    onClick={() => {
+                      setCityFilter(cityFilter === city.city ? null : city.city);
+                      // Capitalize for search as well
+                      let searchValue = city.city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                      if (cityKey.includes('tulum') || cityKey.includes('playa')) searchValue = 'Tulum';
+                      setSearchTerm(searchValue);
+                    }}
+                    title={`Show groups in ${displayCity}`}
+                    style={{ position: 'relative', overflow: 'hidden' }}
+                  >
+                    <img
+                      src={heroImg}
+                      alt={displayCity}
+                      className="w-full h-24 object-cover rounded-t-2xl"
+                      onError={e => (e.currentTarget.src = '/placeholder.svg')}
+                    />
+                    <div className="p-3 flex flex-col items-center justify-center">
+                      <span className="font-bold text-lg text-[#064e68]">{displayCity}</span>
+                      <span className="text-xs text-gray-500">{city.country}</span>
+                      <span className="text-sm font-medium text-gray-700 mt-1">{city.count} groups</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -260,16 +403,45 @@ const Index = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                  {filteredGroups.map((group, index) => (
-                    <GroupCard
-                      key={index}
-                      group={group}
-                      liked={likedGroups.includes(group.Name + group.URL)}
-                      onToggleLike={handleToggleLike}
-                    />
-                  ))}
-                </div>
+                {sortedCountries.map(country => {
+                  // Count locked groups for this country from ALL groups, not just filtered
+                  const lockedCount = (allGroupedByCountry[country] || []).filter(g => {
+                    const isFreeValue = g.IsFree ?? g.isFree;
+                    return typeof isFreeValue === 'string' && isFreeValue.trim().toLowerCase() !== 'yes';
+                  }).length;
+                  return (
+                    <div key={country} className="mb-10">
+                      <div className="flex items-center gap-2 mb-4 justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-block w-6 h-6 rounded-full bg-[hsl(var(--brand))] text-white flex items-center justify-center font-bold text-base uppercase">{country[0]}</span>
+                          <h2 className="text-xl font-bold text-[#064e68]">{country}</h2>
+                        </div>
+                        {/* Show unlock indicator on far right if ALLOW_VIEW_ALL_CITIES is false and there are locked groups */}
+                        {ALLOW_VIEW_ALL_CITIES === false && lockedCount > 0 && (
+                          <Button
+                            asChild
+                            className="ml-2 bg-brand hover:bg-brand/90 text-white font-semibold px-4 py-2 rounded-md shadow transition-colors"
+                            style={{ minWidth: 0, whiteSpace: 'nowrap' }}
+                          >
+                            <Link to="/register">
+                              Unlock {lockedCount} more groups
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {groupedByCountry[country].map((group, index) => (
+                          <GroupCard
+                            key={group.Name + group.URL + index}
+                            group={group}
+                            liked={likedGroups.includes(group.Name + group.URL)}
+                            onToggleLike={handleToggleLike}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
 
                 {filteredGroups.length === 0 && groups.length > 0 && (
                   <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
@@ -309,6 +481,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
+      <AnalyticsAndConsent />
     </div>
   );
 };
