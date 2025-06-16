@@ -3,7 +3,7 @@
 	filemode = true
 	bare = true
 [remote "origin"]
-	url = ***REMOVED***.git
+	url = https://github.com/Unconfirmed2/digital-vagabonding.git
 	tagOpt = --no-tags
 	fetch = +refs/*:refs/*
 	mirror = true
