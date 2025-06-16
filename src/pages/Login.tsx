@@ -98,11 +98,13 @@ const Login: React.FC = () => {
                 />
                 <Button type="submit" className="w-full">Sign In</Button>
               </form>
-              <Button onClick={handleGoogleSignIn} className="w-full" variant="outline">
-                Sign in with Google
-              </Button>
-              {googleNotice && <div className="text-blue-600 text-xs font-semibold mt-2">{googleNotice}</div>}
-              {error && <div className="text-red-500 text-xs">{error}</div>}
+              <div className="flex flex-col gap-2 mt-4">
+                <Button type="button" variant="outline" onClick={handleGoogleSignIn}>
+                  Sign in with Google
+                </Button>
+                {googleNotice && <div className="text-yellow-600 text-xs text-center mt-2">{googleNotice}</div>}
+                {error && <div className="text-red-600 text-xs text-center mt-2">{error}</div>}
+              </div>
             </>
           ) : (
             <Button onClick={handleLogout} className="w-full" variant="destructive">
