@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const router = express.Router();
 
 // Helper to get Stripe instance based on testMode
-async function getStripeInstance(testMode = false) {
+async function getStripeInstance(testMode = true) {
   const keyName = testMode ? 'stripe_test' : 'Stripe1';
   const { data, error } = await supabase
     .from('secrets')
