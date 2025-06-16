@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, MapPin, Tag } from 'lucide-react';
+import { ExternalLink, MapPin, Tag, Heart } from 'lucide-react';
 
 interface Group {
   Order: number | null;
@@ -19,6 +19,8 @@ interface Group {
 
 interface GroupCardProps {
   group: Group;
+  liked?: boolean;
+  onToggleLike?: (group: Group) => void;
 }
 
 const platformImageMap: Record<string, string> = {
@@ -30,7 +32,7 @@ const platformImageMap: Record<string, string> = {
   internet: 'Website.png',
 };
 
-export const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
+export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike }) => {
   const handleJoinGroup = () => {
     if (group.URL) {
       window.open(group.URL, '_blank', 'noopener,noreferrer');
@@ -51,9 +53,22 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
         >
           {group.Name || 'Unnamed Group'}
         </h3>
-        {platformImg && (
-          <img src={platformImg} alt={group['Link Type'] || 'Platform'} className="h-7 w-7 flex-shrink-0" />
-        )}
+        <div className="flex flex-col items-center gap-1">
+          {platformImg && (
+            <img src={platformImg} alt={group['Link Type'] || 'Platform'} className="h-7 w-7 flex-shrink-0" />
+          )}
+          {/* Heart icon for like */}
+          {onToggleLike && (
+            <button
+              aria-label={liked ? 'Unlike group' : 'Like group'}
+              onClick={() => onToggleLike(group)}
+              className="mt-1 focus:outline-none"
+              style={{ background: 'none', border: 'none', padding: 0 }}
+            >
+              <Heart className={`h-5 w-5 ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} fill={liked ? 'currentColor' : 'none'} />
+            </button>
+          )}
+        </div>
       </div>
       {/* Location */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">

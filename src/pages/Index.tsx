@@ -30,6 +30,12 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
+  const [likedGroups, setLikedGroups] = useState<string[]>(() => {
+    // Use localStorage for persistence
+    const stored = localStorage.getItem('likedGroups');
+    return stored ? JSON.parse(stored) : [];
+  });
+  const [showLikedOnly, setShowLikedOnly] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -38,7 +44,11 @@ const Index = () => {
 
   useEffect(() => {
     filterGroups();
-  }, [groups, searchTerm, selectedTag]);
+  }, [groups, searchTerm, selectedTag, showLikedOnly, likedGroups]);
+
+  useEffect(() => {
+    localStorage.setItem('likedGroups', JSON.stringify(likedGroups));
+  }, [likedGroups]);
 
   const fetchGroups = async () => {
     try {
@@ -84,6 +94,17 @@ const Index = () => {
     }
   };
 
+  const handleToggleLike = (group) => {
+    setLikedGroups((prev) => {
+      const id = group.Name + group.URL; // Use a unique identifier
+      if (prev.includes(id)) {
+        return prev.filter((gid) => gid !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
   const filterGroups = () => {
     let filtered = groups.filter(group => group.Name && group.URL);
 
@@ -100,7 +121,9 @@ const Index = () => {
     if (selectedTag) {
       filtered = filtered.filter(group => group.Tag === selectedTag);
     }
-
+    if (showLikedOnly) {
+      filtered = filtered.filter(group => likedGroups.includes(group.Name + group.URL));
+    }
     setFilteredGroups(filtered);
   };
 
@@ -193,6 +216,17 @@ const Index = () => {
                   tags={availableTags}
                   suggestions={searchSuggestions}
                 />
+                {/* Liked filter button */}
+                <Button
+                  type="button"
+                  variant={showLikedOnly ? 'default' : 'outline'}
+                  className="ml-2 flex items-center gap-1"
+                  onClick={() => setShowLikedOnly((v) => !v)}
+                  aria-pressed={showLikedOnly}
+                >
+                  <span>Liked</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill={showLikedOnly ? 'red' : 'none'} viewBox="0 0 24 24" stroke="currentColor" className={`h-5 w-5 ${showLikedOnly ? 'text-red-500' : 'text-gray-400'}`}> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" /></svg>
+                </Button>
               </div>
               <div className="flex flex-row gap-0 md:gap-2 min-w-[160px] md:min-w-[220px] justify-center md:justify-end items-center self-center h-full">
                 <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
@@ -228,7 +262,12 @@ const Index = () => {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                   {filteredGroups.map((group, index) => (
-                    <GroupCard key={index} group={group} />
+                    <GroupCard
+                      key={index}
+                      group={group}
+                      liked={likedGroups.includes(group.Name + group.URL)}
+                      onToggleLike={handleToggleLike}
+                    />
                   ))}
                 </div>
 
