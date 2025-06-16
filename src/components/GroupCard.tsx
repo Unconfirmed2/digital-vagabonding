@@ -22,12 +22,12 @@ interface GroupCardProps {
 }
 
 const platformImageMap: Record<string, string> = {
-  whatsapp: '/digital-vagabonding/Whatsapp.png',
-  telegram: '/digital-vagabonding/Telegram.png',
-  facebook: '/digital-vagabonding/Facebook.png',
-  meetup: '/digital-vagabonding/Meetup.png',
-  reddit: '/digital-vagabonding/Reddit.png',
-  internet: '/digital-vagabonding/Website.png',
+  whatsapp: 'Whatsapp.png',
+  telegram: 'Telegram.png',
+  facebook: 'Facebook.png',
+  meetup: 'Meetup.png',
+  reddit: 'Reddit.png',
+  internet: 'Website.png',
 };
 
 export const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
