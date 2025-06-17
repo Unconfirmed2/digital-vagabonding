@@ -1,12 +1,28 @@
 import Stripe from 'stripe';
 import express from 'express';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-04-10' });
+// Helper to get the correct Stripe secret key
+function getStripeSecretKey(testMode: boolean) {
+  if (testMode) {
+    if (!process.env.STRIPE_SK_TEST) {
+      throw new Error('STRIPE_SK_TEST is not set in environment variables');
+    }
+    return process.env.STRIPE_SK_TEST;
+  } else {
+    if (!process.env.STRIPE_SK_LIVE) {
+      throw new Error('STRIPE_SK_LIVE is not set in environment variables');
+    }
+    return process.env.STRIPE_SK_LIVE;
+  }
+}
+
 const router = express.Router();
 
 // Create Stripe Checkout session
 router.post('/create-stripe-session', async (req, res) => {
   const { userId, priceId } = req.body;
+  const testMode = req.query.testMode === 'true' || process.env.STRIPE_TEST_MODE === 'true';
+  const stripe = new Stripe(getStripeSecretKey(testMode), { apiVersion: '2024-04-10' });
   // TODO: Lookup/create Stripe customer for userId
   // For demo, use a test customer
   const customer = await stripe.customers.create({ metadata: { userId } });
@@ -24,6 +40,8 @@ router.post('/create-stripe-session', async (req, res) => {
 // Cancel Stripe subscription
 router.post('/cancel-stripe-subscription', async (req, res) => {
   const { userId } = req.body;
+  const testMode = req.query.testMode === 'true' || process.env.STRIPE_TEST_MODE === 'true';
+  const stripe = new Stripe(getStripeSecretKey(testMode), { apiVersion: '2024-04-10' });
   // TODO: Lookup subscription by userId, then cancel
   // For demo, just return success
   res.json({ success: true });

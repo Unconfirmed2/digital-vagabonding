@@ -73,7 +73,8 @@ const Index = () => {
   }, []);
 
   const checkSubscription = async () => {
-    const user = supabase.auth.user();
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
     const active = await hasActiveSubscription(user?.id);
     setSubscriptionActive(active);
   };
