@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -35,32 +34,35 @@ export const MenuHeader: React.FC = () => {
 
   return (
     <div className="relative" ref={menuRef}>
-      <Button variant="ghost" size="icon" onClick={() => setOpen((v) => !v)} className="ml-2">
-        {open ? <X className="h-12 w-12" /> : <Menu className="h-12 w-12" />}
-      </Button>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="ml-2 p-2 rounded-full hover:bg-gray-100"
+        aria-label={open ? 'Close menu' : 'Open menu'}
+      >
+        {open ? <X className="h-7 w-7 md:h-9 md:w-9" /> : <Menu className="h-7 w-7 md:h-9 md:w-9" />}
+      </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50 p-4 flex flex-col gap-4">
+        <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg z-50 p-4 flex flex-col gap-4">
           {!user ? (
             <>
-              <Link to="/login" className="w-full">
-                <Button className="w-full">Sign In</Button>
-              </Link>
-              <Link to="/register" className="w-full">
-                <Button className="w-full" variant="outline">Register</Button>
-              </Link>
+              <Link to="/login" className="text-[#1D1818} hover:underline text-sm transition-colors">Sign In</Link>
+              <Link to="/register" className="text-[#1D1818} hover:underline text-sm transition-colors">Register</Link>
             </>
           ) : (
             <>
-              <Link to="/account" className="w-full">
-                <Button className="w-full">Account</Button>
-              </Link>
-              <Button onClick={handleLogout} className="w-full" variant="destructive">
+              <Link to="/account" className="text-[#1D1818} hover:underline text-sm transition-colors">Account</Link>
+              <button
+                onClick={handleLogout}
+                className="text-[#1D1818} hover:underline text-sm text-left transition-colors focus:outline-none"
+                type="button"
+              >
                 Sign Out
-              </Button>
+              </button>
             </>
           )}
-          <Link to="/about-us" className="text-blue-600 hover:underline text-sm">About Us</Link>
-          <a href="https://digitalvagabondingblog.wordpress.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">Blog</a>
+          <Link to="/about-us" className="text-[#1D1818} hover:underline text-sm transition-colors">About Us</Link>
+          <a href="https://digitalvagabondingblog.wordpress.com/" target="_blank" rel="noopener noreferrer" className="text-[#1D1818} hover:underline text-sm transition-colors">Blog</a>
         </div>
       )}
     </div>

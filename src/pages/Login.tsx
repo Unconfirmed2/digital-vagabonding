@@ -58,7 +58,7 @@ const Login: React.FC = () => {
       {/* Main header */}
       <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between h-[64px]">
             <Link to="/" className="flex items-center focus:outline-none h-10">
               <img
                 src="/Logo-noBR.png"

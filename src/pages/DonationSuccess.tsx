@@ -14,15 +14,15 @@ const DonationSuccess = () => {
       {/* Main header */}
       <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
-          <div className="flex items-center justify-between py-3">
-            <Link to="/" className="flex items-center focus:outline-none h-10">
+          <div className="flex items-center justify-between h-[64px] md:h-[72px]">
+            <Link to="/" className="flex items-center focus:outline-none h-10 md:h-12">
               <img
                 src="/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
-                className="h-10 w-10 mr-3 cursor-pointer"
+                className="h-8 w-8 md:h-10 md:w-10 mr-2 md:mr-3 cursor-pointer"
                 style={{ objectFit: 'contain' }}
               />
-              <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#064e6b' }}>
+              <span className="text-2xl md:text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#064e6b' }}>
                 Digital VagaBonding
               </span>
             </Link>

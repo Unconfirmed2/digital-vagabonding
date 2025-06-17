@@ -11,7 +11,7 @@ const TermsOfService = () => {
       {/* Main header */}
       <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between h-[64px]">
             <Link to="/" className="flex items-center focus:outline-none h-10">
               <img
                 src="/Logo-noBR.png"
@@ -118,7 +118,7 @@ const TermsOfService = () => {
               <p>We reserve the right to take appropriate legal action against anyone who, in our sole discretion, violates the law or these Terms of Service, including without limitation, reporting such user to law enforcement authorities.</p>
               <p>Without limiting the foregoing, we have the right to cooperate with any law enforcement authorities or court order requesting or directing us to disclose the identity of anyone posting such materials.</p>
               <h2 className="text-2xl font-bold mt-8">Privacy Policy</h2>
-              <p>We care about data privacy and security. Please review our Privacy Policy: <a href="/privacy-policy" className="text-blue-600 underline">https://unconfirmed2.github.io/privacy-policy</a>. By using the Site, you agree to be bound by our Privacy Policy, which is incorporated into these Terms of Service. Please be advised that the Site is hosted in the United States. If you access the Site from the European Union, Asia, or any other region of the world with laws or regulations governing personal data collection, use, and disclosure that differ from United States laws, then through your continued use of the Site, you are transferring your data to the United States, and you agree to have your data used and disclosed as set forth in these Terms of Service and the Privacy Policy.</p>
+              <p>We care about data privacy and security. Please review our Privacy Policy: <a href="/privacy-policy" className="text-[#1D1818} underline">https://unconfirmed2.github.io/privacy-policy</a>. By using the Site, you agree to be bound by our Privacy Policy, which is incorporated into these Terms of Service. Please be advised that the Site is hosted in the United States. If you access the Site from the European Union, Asia, or any other region of the world with laws or regulations governing personal data collection, use, and disclosure that differ from United States laws, then through your continued use of the Site, you are transferring your data to the United States, and you agree to have your data used and disclosed as set forth in these Terms of Service and the Privacy Policy.</p>
               <h2 className="text-2xl font-bold mt-8">Term and Termination</h2>
               <p>These Terms of Service shall remain in full force and effect while you use the Site. WITHOUT LIMITING ANY OTHER PROVISION OF THESE TERMS OF SERVICE, WE RESERVE THE RIGHT TO, IN OUR SOLE DISCRETION AND WITHOUT NOTICE OR LIABILITY, DENY ACCESS TO AND USE OF THE SITE TO ANY PERSON FOR ANY REASON OR FOR NO REASON AT ALL, INCLUDING WITHOUT LIMITATION FOR VIOLATION OF ANY REPRESENTATION, WARRANTY, OR COVENANT CONTAINED IN THESE TERMS OF SERVICE OR OF ANY APPLICABLE LAW OR REGULATION.</p>
               <p>We may terminate your use or participation in the Site or delete your account and any content or information that you posted at any time, without warning, in our sole discretion.</p>
@@ -145,8 +145,8 @@ const TermsOfService = () => {
               <p>Contact Us</p>
               <p>If you have any questions about these Terms of Service, please contact us:</p>
               <ul className="list-disc ml-6">
-                <li>By email: <a href="mailto:support@digitalvagabond.ing" className="text-blue-600 underline">support@digitalvagabond.ing</a></li>
-                <li>By visiting this page on our website: <a href="https://unconfirmed2.github.io/privacy" className="text-blue-600 underline">https://unconfirmed2.github.io/privacy</a></li>
+                <li>By email: <a href="mailto:support@digitalvagabond.ing" className="text-[#1D1818} underline">support@digitalvagabond.ing</a></li>
+                <li>By visiting this page on our website: <a href="https://unconfirmed2.github.io/privacy" className="text-[#1D1818} underline">https://unconfirmed2.github.io/privacy</a></li>
               </ul>
             </div>
           </div>

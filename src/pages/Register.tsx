@@ -55,7 +55,7 @@ const Register: React.FC = () => {
       {/* Main header */}
       <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between h-[64px]">
             <Link to="/" className="flex items-center focus:outline-none h-10">
               <img
                 src="/Logo-noBR.png"
@@ -112,7 +112,7 @@ const Register: React.FC = () => {
           <button
             type="button"
             onClick={handlePasswordReset}
-            className="text-xs text-blue-600 hover:underline mt-1 text-left"
+            className="text-xs text-[#1D1818} hover:underline mt-1 text-left"
           >
             Forgot password? Email me a reset link
           </button>
@@ -120,7 +120,7 @@ const Register: React.FC = () => {
           {success && <div className="text-green-600 text-xs">{success}</div>}
           <div className="text-xs text-center mt-2">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-600 hover:underline">Sign in here.</Link>
+            <Link to="/login" className="text-[#1D1818} hover:underline">Sign in here.</Link>
           </div>
         </div>
       </div>

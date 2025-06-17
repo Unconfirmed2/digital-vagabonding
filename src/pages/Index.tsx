@@ -251,7 +251,7 @@ const Index = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7FF]">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <Loader2 className="h-12 w-12 animate-spin text-[#1D1818} mx-auto mb-4" />
           <p className="text-gray-600">Loading travel groups...</p>
         </div>
       </div>
@@ -263,7 +263,7 @@ const Index = () => {
       {/* Fixed header */}
       <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between h-[64px]">
             <div className="flex items-center">
               <img
                 src="/Logo-noBR.png"
