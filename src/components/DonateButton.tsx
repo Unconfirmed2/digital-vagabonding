@@ -15,7 +15,7 @@ export const DonateButton: React.FC = () => {
   return (
     <Button
       onClick={handleDonate}
-      className="bg-pink-600 hover:bg-pink-700 text-white font-medium px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
+      className="bg-pink-600 hover:bg-pink-700 text-white font-medium px-6 py-2 shadow-lg transition-all duration-200"
     >
       <Heart className="h-4 w-4 mr-2" />
       Support Us

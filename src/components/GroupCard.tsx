@@ -43,7 +43,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike
   const platformImg = platformImageMap[platform];
 
   return (
-    <Card className="flex flex-col h-full w-full bg-white rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] transition-all duration-200 border-0 relative p-5 pt-6 pb-6">
+    <Card className="flex flex-col h-full w-full bg-white rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] transition-all duration-200 border-0 relative p-5 pt-6 pb-6">
       {/* Top row: Group info, like button, and platform icon in one container */}
       <div className="flex items-start justify-between mb-2 w-full">
         <div className="flex flex-row w-full">
@@ -81,7 +81,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike
               <button
                 aria-label={liked ? 'Unlike group' : 'Like group'}
                 onClick={() => onToggleLike(group)}
-                className="focus:outline-none mb-2.5"
+                className="focus:outline-none mb-2.5 transition-transform transition-colors duration-150 hover:scale-110 hover:text-red-500"
                 style={{ background: 'none', border: 'none', padding: 0 }}
               >
                 <Heart className={`h-5 w-5 ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} fill={liked ? 'currentColor' : 'none'} />

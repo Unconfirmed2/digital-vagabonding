@@ -289,7 +289,7 @@ const Index = () => {
           <div className="relative w-full">
             {/* Tab notification for locked groups, only if ALLOW_VIEW_ALL_CITIES is false */}
             {/* Removed unlock x groups notification */}
-            <div className="rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] p-3 md:p-6 flex flex-col gap-1 items-start w-full transition-shadow duration-200">
+            <div className="rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] p-3 md:p-6 flex flex-col gap-1 items-start w-full transition-shadow duration-200">
               <div className="w-full flex flex-col items-start mb-0.5">
                 <p className="text-base xs:text-lg sm:text-xl md:text-[1.5rem] font-semibold text-[#1D1818] leading-snug text-left">
                   The largest collection of groups for travelers from around the world (wide web)
@@ -300,7 +300,7 @@ const Index = () => {
               </div>
               <div className="flex flex-col md:flex-row w-full gap-1 md:gap-2 items-center justify-center md:justify-between md:items-center">
                 {/* Filters/search and counts, all vertically centered and aligned */}
-                <div className="flex-1 w-full flex items-center">
+                <div className="flex-1 w-full flex items-center gap-2">
                   <SearchFilters
                     searchTerm={searchTerm}
                     onSearchChange={val => {
@@ -313,16 +313,17 @@ const Index = () => {
                     suggestions={searchSuggestions}
                   />
                   {/* Liked filter button */}
-                  <Button
-                    type="button"
-                    variant={showLikedOnly ? 'default' : 'outline'}
-                    className="ml-2 flex items-center gap-1"
-                    onClick={() => setShowLikedOnly((v) => !v)}
+                  <div
+                    role="button"
+                    tabIndex={0}
                     aria-pressed={showLikedOnly}
+                    onClick={() => setShowLikedOnly((v) => !v)}
+                    onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') setShowLikedOnly((v) => !v); }}
+                    className="flex items-center gap-1 border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68] bg-background rounded-md h-10 px-3 py-2 cursor-pointer select-none transition-colors duration-150 text-sm text-[#1D1818] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 -ml-4"
                   >
-                    <span>Liked</span>
+                    <span className="text-[#1D1818] text-sm">Favorites</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill={showLikedOnly ? 'red' : 'none'} viewBox="0 0 24 24" stroke="currentColor" className={`h-5 w-5 ${showLikedOnly ? 'text-red-500' : 'text-gray-400'}`}> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" /></svg>
-                  </Button>
+                  </div>
                 </div>
                 <div className="flex flex-row gap-0 md:gap-2 min-w-[160px] md:min-w-[220px] justify-center md:justify-end items-center self-center h-full">
                   <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
@@ -361,7 +362,7 @@ const Index = () => {
                 return (
                   <div
                     key={city.city}
-                    className={`flex-1 min-w-[120px] max-w-[200px] bg-white rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] transition-shadow duration-200 cursor-pointer border-2 ${cityFilter === city.city ? 'border-[hsl(var(--brand))]' : 'border-transparent'}`}
+                    className={`flex-1 min-w-[120px] max-w-[200px] bg-white rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] transition-shadow duration-200 cursor-pointer border-2 p-0 ${cityFilter === city.city ? 'border-[hsl(var(--brand))]' : 'border-transparent'}`}
                     onClick={() => {
                       setCityFilter(cityFilter === city.city ? null : city.city);
                       // Capitalize for search as well
@@ -375,7 +376,7 @@ const Index = () => {
                     <img
                       src={heroImg}
                       alt={displayCity}
-                      className="w-full h-24 object-cover rounded-t-2xl"
+                      className="w-full h-24 object-cover"
                       onError={e => (e.currentTarget.src = '/placeholder.svg')}
                     />
                     <div className="p-3 flex flex-col items-center justify-center">

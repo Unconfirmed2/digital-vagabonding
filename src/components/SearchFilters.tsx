@@ -67,7 +67,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               onChange={handleInputChange}
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-              className="pl-10 pr-8 text-[#1D1818] placeholder:text-[#1D1818]"
+              className="pl-10 pr-8 text-[#1D1818] placeholder:text-[#1D1818] border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68]"
               autoComplete="off"
             />
             {searchTerm && (
@@ -101,7 +101,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             id="tag"
             value={selectedTag}
             onChange={(e) => onTagChange(e.target.value)}
-            className="w-full h-10 px-3 py-2 border border-input bg-background text-sm ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-[#1D1818] placeholder:text-[#1D1818] appearance-none pr-10"
+            className="w-full h-10 px-3 py-2 border border-gray-400 focus:border-gray-600 hover:border-gray-600 bg-background text-sm ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-[#1D1818] placeholder:text-[#1D1818] appearance-none pr-10"
           >
             <option value="">All interests</option>
             {tags.map((tag) => (
