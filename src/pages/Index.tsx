@@ -261,19 +261,19 @@ const Index = () => {
   return (
     <div className="min-h-screen w-full bg-[#F8F7FF] flex flex-col">
       {/* Fixed header */}
-      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
+      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[32px] md:h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
-          <div className="flex items-center justify-between h-[64px]">
+          <div className="flex items-center justify-between h-[32px] md:h-[64px]">
             <div className="flex items-center">
               <img
                 src="/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
-                className="h-10 w-10 mr-3"
+                className="h-5 w-5 md:h-10 md:w-10 mr-1 md:mr-3"
                 style={{ objectFit: 'contain' }}
               />
-              <div className="flex flex-col justify-between h-10 py-0">
+              <div className="flex flex-col justify-between h:5 md:h-10 py-0">
                 <Link to="/" className="focus:outline-none h-full flex flex-col justify-between">
-                  <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif' }}>
+                  <span className="text-[1.5rem] md:text-[2.5rem] text-brand leading-none flex items-center h-[32x] md:h-[64px] font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif' }}>
                     Digital VagaBonding
                   </span>
                 </Link>
@@ -298,9 +298,9 @@ const Index = () => {
                   Find your community...wherever you are
                 </p>
               </div>
-              <div className="flex flex-col md:flex-row w-full gap-1 md:gap-2 items-center justify-center md:justify-between md:items-center">
+              <div className="flex flex-col md:flex-row w-full gap-1 md:gap-2  ">
                 {/* Filters/search and counts, all vertically centered and aligned */}
-                <div className="flex-1 w-full flex items-center gap-2">
+                <div className="flex-1 w-full flex-row justify gap-2">
                   <SearchFilters
                     searchTerm={searchTerm}
                     onSearchChange={val => {
@@ -311,21 +311,22 @@ const Index = () => {
                     onTagChange={setSelectedTag}
                     tags={availableTags}
                     suggestions={searchSuggestions}
+                    favoritesButton={
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        aria-pressed={showLikedOnly}
+                        onClick={() => setShowLikedOnly((v) => !v)}
+                        onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') setShowLikedOnly((v) => !v); }}
+                        className="flex justify-start items-center gap-1 border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68] bg-background rounded-md h-10 px-3 py-2 cursor-pointer select-none transition-colors duration-150 text-sm text-[#1D1818] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <span className="text-[#1D1818] text-sm">Favorites</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill={showLikedOnly ? 'red' : 'none'} viewBox="0 0 24 24" stroke="currentColor" className={`h-5 w-5 ${showLikedOnly ? 'text-red-500' : 'text-gray-400'}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" /></svg>
+                      </div>
+                    }
                   />
-                  {/* Liked filter button */}
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    aria-pressed={showLikedOnly}
-                    onClick={() => setShowLikedOnly((v) => !v)}
-                    onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') setShowLikedOnly((v) => !v); }}
-                    className="flex items-center gap-1 border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68] bg-background rounded-md h-10 px-3 py-2 cursor-pointer select-none transition-colors duration-150 text-sm text-[#1D1818] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 -ml-4"
-                  >
-                    <span className="text-[#1D1818] text-sm">Favorites</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill={showLikedOnly ? 'red' : 'none'} viewBox="0 0 24 24" stroke="currentColor" className={`h-5 w-5 ${showLikedOnly ? 'text-red-500' : 'text-gray-400'}`}> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" /></svg>
-                  </div>
                 </div>
-                <div className="flex flex-row gap-0 md:gap-2 min-w-[160px] md:min-w-[220px] justify-center md:justify-end items-center self-center h-full">
+                <div className="flex flex-row gap-0 gap-3 min-w-[160px] md:min-w-[220px] justify-center md:justify-end items-center self-center h-full">
                   <div className="flex flex-col items-center  min-w-[50px] md:min-w-[70px]">
                     <span className="text-base md:text-lg font-bold text-[#1D1818] leading-tight">{filteredGroups.length}</span>
                     <span className="text-s font-medium text-[#1D1818] mt-0">Groups</span>

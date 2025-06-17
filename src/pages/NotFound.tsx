@@ -15,20 +15,26 @@ const NotFound = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       {/* Fixed header */}
-      <div className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 flex items-center justify-between h-[64px] md:h-[72px] max-w-4xl">
-          <a href="/" className="flex items-center focus:outline-none h-10 md:h-12">
-            <img
-              src="/Logo-noBR.png"
-              alt="Digital Vagabonding Logo"
-              className="h-8 w-8 md:h-10 md:w-10 mr-2 md:mr-3 cursor-pointer"
-              style={{ objectFit: 'contain' }}
-            />
-            <span className="text-2xl md:text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#064e6b' }}>
-              Digital VagaBonding
-            </span>
-          </a>
-          {/* Menu button for NotFound page (optional, or you can import and use <MenuHeader /> if desired) */}
+      <div className="fixed top-0 left-0 w-full z-50 border-b border-[#e0def7] max-h-[64px] shadow-inner bg-[#fbf5f7]">
+        <div className="w-full px-[5vw]">
+          <div className="flex items-center justify-between max-h-[64px] max-w-4xl mx-auto">
+            <div className="flex items-center">
+              <img
+                src="/Logo-noBR.png"
+                alt="Digital Vagabonding Logo"
+                className="h-10 w-10 mr-3"
+                style={{ objectFit: 'contain' }}
+              />
+              <div className="flex flex-col justify-between h-10 py-0">
+                <a href="/" className="focus:outline-none h-full flex flex-col justify-between">
+                  <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif' }}>
+                    Digital VagaBonding
+                  </span>
+                </a>
+              </div>
+            </div>
+            {/* Optionally add <MenuHeader /> here if desired */}
+          </div>
         </div>
       </div>
       {/* Spacer for fixed header */}

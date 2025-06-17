@@ -8,21 +8,25 @@ import { AnalyticsAndConsent } from '@/components/AnalyticsAndConsent';
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen w-full bg-[#F8F7FF] flex flex-col">
-      {/* Main header */}
-      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] h-[64px] shadow-inner bg-[#fbf5f7]">
+      {/* Fixed header */}
+      <header className="w-full fixed top-0 left-0 z-50 border-b border-[#e0def7] max-h-[64px] shadow-inner bg-[#fbf5f7]">
         <div className="w-full px-[5vw]">
-          <div className="flex items-center justify-between h-[64px] md:h-[72px]">
-            <Link to="/" className="flex items-center focus:outline-none h-10 md:h-12">
+          <div className="flex items-center justify-between max-h-[64px]">
+            <div className="flex items-center">
               <img
                 src="/Logo-noBR.png"
                 alt="Digital Vagabonding Logo"
-                className="h-8 w-8 md:h-10 md:w-10 mr-2 md:mr-3 cursor-pointer"
+                className="h-10 w-10 mr-3"
                 style={{ objectFit: 'contain' }}
               />
-              <span className="text-2xl md:text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif', color: '#064e6b' }}>
-                Digital VagaBonding
-              </span>
-            </Link>
+              <div className="flex flex-col justify-between h-10 py-0">
+                <Link to="/" className="focus:outline-none h-full flex flex-col justify-between">
+                  <span className="text-[2.5rem] text-brand leading-none flex items-center h-full font-sans tracking-tight" style={{ fontWeight: 'normal', letterSpacing: '-0.04em', fontFamily: 'Arial, sans-serif' }}>
+                    Digital VagaBonding
+                  </span>
+                </Link>
+              </div>
+            </div>
             <MenuHeader />
           </div>
         </div>

@@ -40,7 +40,7 @@ export const MenuHeader: React.FC = () => {
         className="ml-2 p-2 rounded-full hover:bg-gray-100"
         aria-label={open ? 'Close menu' : 'Open menu'}
       >
-        {open ? <X className="h-7 w-7 md:h-9 md:w-9" /> : <Menu className="h-7 w-7 md:h-9 md:w-9" />}
+        {open ? <X className="h-5 w-5 md:h-9 md:w-9" /> : <Menu className="h-5 w-5 md:h-9 md:w-9" />}
       </button>
       {open && (
         <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg z-50 p-4 flex flex-col gap-4">

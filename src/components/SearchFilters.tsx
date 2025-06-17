@@ -10,6 +10,7 @@ interface SearchFiltersProps {
   onTagChange: (value: string) => void;
   tags: string[];
   suggestions: string[]; // new prop for autocomplete
+  favoritesButton?: React.ReactNode; // new prop for favorites
 }
 
 export const SearchFilters: React.FC<SearchFiltersProps> = ({
@@ -19,6 +20,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   onTagChange,
   tags,
   suggestions,
+  favoritesButton,
 }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
@@ -55,19 +57,23 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
   return (
     <div className="p-3 md:p-6 mb-0 bg-transparent shadow-none rounded-none">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 md:gap-4 items-center">
-        <div>
-          <div className="relative">
+      <div className="flex flex-row gap-2 justify-between items-center w-full">
+        <div className="relative flex-1 w-full">
+          <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               id="search"
               ref={inputRef}
-              placeholder="Search cities, countries..."
+              placeholder={
+                typeof window !== 'undefined' && window.innerWidth < 768
+                  ? 'Cities, countries...'
+                  : 'Search cities, countries...'
+              }
               value={searchTerm}
               onChange={handleInputChange}
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-              className="pl-10 pr-8 text-[#1D1818] placeholder:text-[#1D1818] border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68]"
+              className="pl-10 pr-8 text-[#1D1818] placeholder:text-[#1D1818] border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68] text-sm md:text-base"
               autoComplete="off"
             />
             {searchTerm && (
@@ -96,12 +102,12 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             )}
           </div>
         </div>
-        <div className="relative flex w-full">
+        <div className="relative flex-1 w-full">
           <select
             id="tag"
             value={selectedTag}
             onChange={(e) => onTagChange(e.target.value)}
-            className="w-full h-10 px-3 py-2 border border-gray-400 focus:border-gray-600 hover:border-gray-600 bg-background text-sm ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-[#1D1818] placeholder:text-[#1D1818] appearance-none pr-10"
+            className="sm:text-center w-full h-10 px-3 py-2 border border-gray-400 focus:border-gray-600 hover:border-gray-600 bg-background text-sm md:text-base ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-[#1D1818] placeholder:text-[#1D1818] appearance-none"
           >
             <option value="">All interests</option>
             {tags.map((tag) => (
@@ -125,15 +131,11 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
           )}
         </div>
-      </div>
-      {/* Responsive filter button for mobile */}
-      <div className="block md:hidden mt-2">
-        <button
-          className="w-full bg-blue-600 text-white py-2 rounded-md text-base font-semibold shadow hover:bg-blue-700 transition-colors"
-          onClick={() => inputRef.current?.focus()}
-        >
-          Filter
-        </button>
+        {favoritesButton && (
+          <div className="flex-1 flex w-full justify-start items-center hidden md:flex">
+            {favoritesButton}
+          </div>
+        )}
       </div>
     </div>
   );
