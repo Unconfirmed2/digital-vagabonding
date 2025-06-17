@@ -1,14 +1,16 @@
 // Configuration for subscription access
-export const ALLOW_VIEW_ALL_CITIES = false; // Set to true to allow all users to view all cities
+export const ALLOW_VIEW_ALL_CITIES = true; // Set to true to allow all users to view all cities
+// Toggle for test mode (set via Vite env or UI)
+export const STRIPE_TEST_MODE = import.meta.env.VITE_STRIPE_TEST_MODE === 'true';
+
+
+
 export const STRIPE_PRICE_ID = 'price_1RaXy2IExHMNSDdgQSRDJsi4'; // Replace with your Stripe Price ID
 export const SUBSCRIPTION_AMOUNT = 10; // $10/year
 
 // Stripe publishable keys (set via Vite env for frontend)
 export const STRIPE_PUBLISHABLE_KEY_LIVE = import.meta.env.VITE_STRIPE_PK_LIVE || '';
 export const STRIPE_PUBLISHABLE_KEY_TEST = import.meta.env.VITE_STRIPE_PK_TEST || '';
-
-// Toggle for test mode (set via Vite env or UI)
-export const STRIPE_TEST_MODE = import.meta.env.VITE_STRIPE_TEST_MODE === 'true';
 
 // Helper to get the correct publishable key
 export function getStripePublishableKey() {
