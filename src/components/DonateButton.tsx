@@ -1,54 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Loader2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { Heart } from 'lucide-react';
+import { STRIPE_TEST_MODE } from '@/config/subscriptionConfig';
+
+const LIVE_LINK = 'https://buy.stripe.com/eVqeVeaH33P62LY1Hy7AI03';
+const TEST_LINK = 'https://buy.stripe.com/test_aFa00kg1n71i4U671S7AI01';
 
 export const DonateButton: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
-
-  const handleDonate = async () => {
-    setLoading(true);
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('create-donation', {
-        body: { 
-          amount: 500, // $5.00 in cents
-          currency: 'usd'
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        // Open Stripe checkout in a new tab
-        window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      console.error('Donation error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to process donation. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleDonate = () => {
+    const url = STRIPE_TEST_MODE ? TEST_LINK : LIVE_LINK;
+    window.open(url, '_blank');
   };
 
   return (
     <Button
       onClick={handleDonate}
-      disabled={loading}
       className="bg-pink-600 hover:bg-pink-700 text-white font-medium px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
     >
-      {loading ? (
-        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-      ) : (
-        <Heart className="h-4 w-4 mr-2" />
-      )}
-      {loading ? 'Processing...' : 'Donate $5'}
+      <Heart className="h-4 w-4 mr-2" />
+      Support Us
     </Button>
   );
 };

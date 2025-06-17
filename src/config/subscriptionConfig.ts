@@ -12,6 +12,9 @@ export const SUBSCRIPTION_AMOUNT = 10; // $10/year
 export const STRIPE_PUBLISHABLE_KEY_LIVE = import.meta.env.VITE_STRIPE_PK_LIVE || '';
 export const STRIPE_PUBLISHABLE_KEY_TEST = import.meta.env.VITE_STRIPE_PK_TEST || '';
 
+// Stripe test subscription link for test mode
+export const STRIPE_TEST_SUBSCRIPTION_LINK = 'https://buy.stripe.com/test_28EfZidTfclCdqC9a07AI02';
+
 // Helper to get the correct publishable key
 export function getStripePublishableKey() {
   return STRIPE_TEST_MODE ? STRIPE_PUBLISHABLE_KEY_TEST : STRIPE_PUBLISHABLE_KEY_LIVE;
