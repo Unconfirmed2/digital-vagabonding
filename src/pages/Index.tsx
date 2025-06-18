@@ -13,8 +13,6 @@ import { filterGroupsByAccess, countLockedCities, countLockedGroups } from '@/li
 import { hasActiveSubscription } from '@/lib/subscriptionAccess';
 import { ALLOW_VIEW_ALL_CITIES, STRIPE_TEST_MODE, STRIPE_TEST_SUBSCRIPTION_LINK, STRIPE_LIVE_SUBSCRIPTION_LINK } from '@/config/subscriptionConfig';
 import { AnalyticsAndConsent } from '@/components/AnalyticsAndConsent';
-import ExpandableListView from '@/components/ExpandableListView';
-import { Switch } from '@/components/ui/switch';
 
 interface Group {
   Order: number | null;
@@ -46,7 +44,6 @@ const Index = () => {
   const [lockedCities, setLockedCities] = useState(0);
   const [lockedGroups, setLockedGroups] = useState(0);
   const [user, setUser] = useState<any>(null);
-  const [isListView, setIsListView] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -339,10 +336,6 @@ const Index = () => {
                           <span className="text-[#1D1818] text-sm">Favorites</span>
                           <svg xmlns="http://www.w3.org/2000/svg" fill={showLikedOnly ? 'red' : 'none'} viewBox="0 0 24 24" stroke="currentColor" className={`h-5 w-5 ${showLikedOnly ? 'text-red-500' : 'text-gray-400'}`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" /></svg>
                         </div>
-                        <div className="flex flex-row items-center gap-1 ml-2">
-                          <Switch checked={isListView} onCheckedChange={setIsListView} id="list-view-switch" />
-                          <label htmlFor="list-view-switch" className="text-sm font-medium text-[#1D1818]">List View</label>
-                        </div>
                       </div>
                     }
                   />
@@ -430,75 +423,34 @@ const Index = () => {
                 </p>
               </div>
             ) : (
-              isListView ? (
-                <ExpandableListView
-                  groupedByCountry={groupedByCountry}
-                  allGroupedByCountry={allGroupedByCountry}
-                  sortedCountries={sortedCountries}
-                  likedGroups={likedGroups}
-                  handleToggleLike={handleToggleLike}
-                  ALLOW_VIEW_ALL_CITIES={ALLOW_VIEW_ALL_CITIES}
-                />
-              ) : (
-                <>
-                  {sortedCountries.map(country => {
-                    // Count locked groups for this country from ALL groups, not just filtered
-                    const lockedCount = (allGroupedByCountry[country] || []).filter(g => {
-                      const isFreeValue = g.IsFree ?? g.isFree;
-                      return typeof isFreeValue === 'string' && isFreeValue.trim().toLowerCase() !== 'yes';
-                    }).length;
-                    // Group by city within this country
-                    const groupsByCity = (groupedByCountry[country] || []).reduce((acc, group) => {
-                      const city = group.City || 'Other';
-                      if (!acc[city]) acc[city] = [];
-                      acc[city].push(group);
-                      return acc;
-                    }, {} as Record<string, Group[]>);
-                    // Move 'countrywide' groups to the top, do not render a city header for them
-                    const cityKeys = Object.keys(groupsByCity);
-                    const countrywideKey = cityKeys.find(
-                      c => c.trim().toLowerCase() === 'countrywide'
-                    );
-                    const otherCities = cityKeys.filter(
-                      c => c.trim().toLowerCase() !== 'countrywide'
-                    ).sort();
-                    return (
-                      <div key={country} className="mb-10">
-                        <div className="flex items-center gap-2 mb-4 justify-between w-full">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-6 h-6 rounded-full bg-[hsl(var(--brand))] text-white flex items-center justify-center font-bold text-base uppercase">{country[0]}</span>
-                            <h2 className="text-xl font-bold text-[#064e68]">{country}</h2>
-                          </div>
-                          {/* Show unlock indicator on far right if ALLOW_VIEW_ALL_CITIES is false and there are locked groups */}
-                          {ALLOW_VIEW_ALL_CITIES === false && lockedCount > 0 && (
-                            <Button
-                              asChild
-                              className="ml-2 bg-brand hover:bg-brand/90 text-white font-semibold px-4 py-2 rounded-md shadow transition-colors"
-                              style={{ minWidth: 0, whiteSpace: 'nowrap' }}
-                            >
-                              <Link to="/register">
-                                Unlock {lockedCount} more groups
-                              </Link>
-                            </Button>
-                          )}
-                        </div>
-                        {/* Render countrywide groups first, no city header */}
-                        {countrywideKey && (
-                          <div className="mb-6">
-                            {/* Tag/Interest grouping for countrywide */}
-                            {Object.entries((groupsByCity[countrywideKey] || []).reduce((acc, group) => {
-                              const tag = group.Tag || 'Other';
-                              if (!acc[tag]) acc[tag] = [];
-                              acc[tag].push(group);
-                              return acc;
-                            }, {} as Record<string, Group[]>)).map(([tag, tagGroups]) => (
-                              <div key={tag} className="mb-4">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <span className="inline-block w-4 h-4 rounded-full bg-[#e0def7] text-[#064e68] flex items-center justify-center font-bold text-xs uppercase">{tag[0]}</span>
-                                  <h4 className="text-md font-semibold text-[#064e68]">{tag}</h4>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6 xl:gap-8 w-full">
-                                  {tagGroups.map((group, index) => (
+              <div className="w-full flex flex-col gap-8">
+                {sortedCountries.map(country => {
+                  const groupsByCity = (groupedByCountry[country] || []).reduce((acc, group) => {
+                    const city = group.City || 'Other';
+                    if (!acc[city]) acc[city] = [];
+                    acc[city].push(group);
+                    return acc;
+                  }, {} as Record<string, Group[]>);
+                  const cityKeys = Object.keys(groupsByCity).sort();
+                  return (
+                    <div key={country} className="w-full">
+                      <div className="text-xl font-bold text-[#064e68] mb-2 pl-1 bg-[#f5f5fa] rounded">{country}</div>
+                      {cityKeys.map(city => {
+                        const groupsByTag = (groupsByCity[city] || []).reduce((acc, group) => {
+                          const tag = group.Tag || 'Other';
+                          if (!acc[tag]) acc[tag] = [];
+                          acc[tag].push(group);
+                          return acc;
+                        }, {} as Record<string, Group[]>);
+                        const tagKeys = Object.keys(groupsByTag).sort();
+                        return (
+                          <div key={city} className="w-full mb-2">
+                            <div className="text-lg font-semibold text-[#064e68] mb-1 pl-6 bg-[#f7f7fb] rounded">{city}</div>
+                            {tagKeys.map(tag => (
+                              <div key={tag} className="w-full mb-1">
+                                <div className="text-base font-medium text-[#5a5a7a] mb-1 pl-12 bg-[#f9f9fd] rounded">{tag}</div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 pl-16">
+                                  {groupsByTag[tag].map((group, index) => (
                                     <GroupCard
                                       key={group.Name + group.URL + index}
                                       group={group}
@@ -510,52 +462,18 @@ const Index = () => {
                               </div>
                             ))}
                           </div>
-                        )}
-                        {/* Render other cities with city header */}
-                        {otherCities.map(city => (
-                          <div key={city} className="mb-6">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="inline-block w-5 h-5 rounded-full bg-[#e0def7] text-[#064e68] flex items-center justify-center font-bold text-xs uppercase">{city[0]}</span>
-                              <h3 className="text-lg font-semibold text-[#064e68]">{city}</h3>
-                            </div>
-                            {/* Tag/Interest grouping for city */}
-                            {Object.entries((groupsByCity[city] || []).reduce((acc, group) => {
-                              const tag = group.Tag || 'Other';
-                              if (!acc[tag]) acc[tag] = [];
-                              acc[tag].push(group);
-                              return acc;
-                            }, {} as Record<string, Group[]>)).map(([tag, tagGroups]) => (
-                              <div key={tag} className="mb-2">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="inline-block w-4 h-4 rounded-full bg-[#e0def7] text-[#064e68] flex items-center justify-center font-bold text-xs uppercase">{tag[0]}</span>
-                                  <h5 className="text-sm font-semibold text-[#064e68]">{tag}</h5>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6 xl:gap-8 w-full">
-                                  {tagGroups.map((group, index) => (
-                                    <GroupCard
-                                      key={group.Name + group.URL + index}
-                                      group={group}
-                                      liked={likedGroups.includes(group.Name + group.URL)}
-                                      onToggleLike={handleToggleLike}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-
-                  {filteredGroups.length === 0 && groups.length > 0 && (
-                    <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
-                      <p className="text-gray-500 text-lg">No groups found matching your criteria.</p>
-                      <p className="text-gray-400 mt-2">Try adjusting your search filters.</p>
+                        );
+                      })}
                     </div>
-                  )}
-                </>
-              )
+                  );
+                })}
+                {filteredGroups.length === 0 && groups.length > 0 && (
+                  <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
+                    <p className="text-gray-500 text-lg">No groups found matching your criteria.</p>
+                    <p className="text-gray-400 mt-2">Try adjusting your search filters.</p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </section>

@@ -34,7 +34,7 @@ const platformImageMap: Record<string, string> = {
   internet: 'Website.png',
 };
 
-export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike, listMode, hideMeta }) => {
+export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike }) => {
   const handleJoinGroup = () => {
     if (group.URL) {
       window.open(group.URL, '_blank', 'noopener,noreferrer');
@@ -44,115 +44,52 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike
   const platform = group['Link Type']?.toLowerCase() || '';
   const platformImg = platformImageMap[platform];
 
-  if (listMode) {
-    return (
-      <div className="flex flex-row items-center justify-between w-full py-2 px-2 bg-white rounded-md border border-gray-100 shadow-sm mb-1">
-        <div className="flex flex-row items-center flex-1 min-w-0 gap-2">
-          <a
-            href={group.URL || undefined}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-base text-gray-900 truncate min-w-0 hover:underline flex items-center gap-1"
-            style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: group.URL ? 'pointer' : 'default' }}
-            title={group.Name || ''}
-          >
-            {group.Name || 'Unnamed Group'}
-          </a>
-        </div>
-        <div className="flex flex-row items-center min-w-[28px] ml-2 gap-2">
-          {platformImg && (
-            <a
-              href={group.URL || undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={group['Link Type'] || 'Platform'}
-            >
-              <img
-                src={platformImg}
-                alt={group['Link Type'] || 'Platform'}
-                className="h-5 w-5 flex-shrink-0 inline-block align-middle"
-              />
-            </a>
-          )}
-          {onToggleLike && (
-            <button
-              aria-label={liked ? 'Unlike group' : 'Like group'}
-              onClick={() => onToggleLike(group)}
-              className="focus:outline-none transition-transform transition-colors duration-150 hover:scale-110 hover:text-red-500"
-              style={{ background: 'none', border: 'none', padding: 0 }}
-            >
-              <Heart className={`h-5 w-5 ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} fill={liked ? 'currentColor' : 'none'} />
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
+  // Card with no shadow by default, border, and custom hover shadow
   return (
-    <Card className="flex flex-col h-20 w-full sm:min-w-0 sm:max-w-none md:min-w-[180px] md:max-w-[260px] bg-white rounded-lg shadow-[0_2px_8px_0_rgba(0,0,0,0.10),0_0_4px_0_rgba(0,0,0,0.08)] transition-all duration-200 border-0 relative p-2 pt-2 pb-2">
-      {/* Top row: Group info and icons */}
-      <div className="flex items-start justify-between mb-1 w-full">
-        {/* Name, city, country container */}
-        <div className="flex flex-col flex-1 min-w-0 pr-1">
+    <div
+      className="flex flex-row items-center justify-between w-full max-w-[600px] md:max-w-[700px] lg:max-w-[480px] xl:max-w-[600px] py-2 px-2 bg-white rounded-md border-2 border-grey:400 hover:shadow-[0_4px_8px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] transition-shadow duration-200 cursor-pointer mb-1 min-h-[44px] group"
+      
+    >
+      <div className="flex flex-row items-center flex-1 min-w-0 gap-2">
+        <a
+          href={group.URL || undefined}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-base text-blue-700 underline underline-offset-2 hover:text-blue-900 truncate min-w-0 flex items-center gap-1 transition-colors duration-150"
+          style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: group.URL ? 'pointer' : 'default', maxWidth: '100%' }}
+          title={group.Name || ''}
+        >
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block', maxWidth: '100%' }}>
+            {group.Name || 'Unnamed Group'}
+          </span>
+        </a>
+      </div>
+      <div className="flex flex-row items-center min-w-[28px] ml-2 gap-2">
+        {platformImg && (
           <a
             href={group.URL || undefined}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-base text-gray-900 truncate min-w-0 hover:underline flex items-center gap-1 mb-0.5"
-            style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: group.URL ? 'pointer' : 'default' }}
-            title={group.Name || ''}
+            title={group['Link Type'] || 'Platform'}
           >
-            {group.Name || 'Unnamed Group'}
+            <img
+              src={platformImg}
+              alt={group['Link Type'] || 'Platform'}
+              className="h-5 w-5 flex-shrink-0 inline-block align-middle"
+            />
           </a>
-          <div className="flex items-center gap-1 text-xs text-gray-600 mb-0 mt-0.5">
-            <MapPin className="h-3 w-3" />
-            <span className="truncate">
-              {group.City && group.Country
-                ? `${group.City}, ${group.Country}`
-                : group.Country || group.City || 'Location not specified'}
-            </span>
-          </div>
-          {/* Tag Badge */}
-          {group.Tag && (
-            <div className="flex flex-wrap mb-0.5">
-              <span className="inline-flex items-center px-1.5 py-0 bg-gray-100 text-gray-700 text-[10px] font-medium rounded">
-                <Tag className="h-2.5 w-2.5 mr-1" />
-                {group.Tag}
-              </span>
-            </div>
-          )}
-        </div>
-        {/* Icon container: platform icon and like button */}
-        <div className="flex flex-col items-center justify-center min-w-[28px] ml-1 gap-1">
-          {platformImg && (
-            <a
-              href={group.URL || undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={group['Link Type'] || 'Platform'}
-            >
-              <img
-                src={platformImg}
-                alt={group['Link Type'] || 'Platform'}
-                className="h-5 w-5 flex-shrink-0 inline-block align-middle"
-              />
-            </a>
-          )}
-          {onToggleLike && (
-            <button
-              aria-label={liked ? 'Unlike group' : 'Like group'}
-              onClick={() => onToggleLike(group)}
-              className="focus:outline-none transition-transform transition-colors duration-150 hover:scale-110 hover:text-red-500 mt-1"
-              style={{ background: 'none', border: 'none', padding: 0 }}
-            >
-              <Heart className={`h-5 w-5 ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} fill={liked ? 'currentColor' : 'none'} />
-            </button>
-          )}
-        </div>
+        )}
+        {onToggleLike && (
+          <button
+            aria-label={liked ? 'Unlike group' : 'Like group'}
+            onClick={() => onToggleLike(group)}
+            className="focus:outline-none transition-transform transition-colors duration-150 hover:scale-110 hover:text-red-500 relative"
+            style={{ background: 'none', border: 'none', padding: 0, top: '2px' }}
+          >
+            <Heart className={`h-5 w-5 ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} fill={liked ? 'currentColor' : 'none'} />
+          </button>
+        )}
       </div>
-      {/* Spacer to push content to bottom */}
-      <div className="flex-1" />
-    </Card>
+    </div>
   );
 };
