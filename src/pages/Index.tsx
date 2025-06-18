@@ -298,7 +298,7 @@ const Index = () => {
       {/* Spacer for fixed header */}
       <div className="flex-1 w-full px-[5vw]" style={{ paddingTop: '48px', paddingBottom: '90px' }}>
         <section className="w-full max-w-6xl mx-auto flex flex-col gap-10">
-          <div className="relative w-full mt-0 md:mt-5">
+          <div className="relative w-full mt-0 md:mt-5 lg:mt-8">
             {/* Tab notification for locked groups, only if ALLOW_VIEW_ALL_CITIES is false */}
             {/* Removed unlock x groups notification */}
             <div className="rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] p-3 md:p-6 flex flex-col gap-1 items-start w-full transition-shadow duration-200">
@@ -434,7 +434,7 @@ const Index = () => {
                   const cityKeys = Object.keys(groupsByCity).sort();
                   return (
                     <div key={country} className="w-full">
-                      <div className="text-xl font-bold text-[#064e68] mb-2 pl-1 bg-[#f5f5fa] rounded">{country}</div>
+                      <div className="text-xl font-bold text-[#064e68] mb-2 pl-1">{country}</div>
                       {cityKeys.map(city => {
                         const groupsByTag = (groupsByCity[city] || []).reduce((acc, group) => {
                           const tag = group.Tag || 'Other';
