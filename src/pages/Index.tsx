@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import { MenuHeader } from '@/components/MenuHeader';
 import { filterGroupsByAccess, countLockedCities, countLockedGroups } from '@/lib/subscriptionAccess';
 import { hasActiveSubscription } from '@/lib/subscriptionAccess';
-import { ALLOW_VIEW_ALL_CITIES } from '@/config/subscriptionConfig';
+import { ALLOW_VIEW_ALL_CITIES, STRIPE_TEST_MODE, STRIPE_TEST_SUBSCRIPTION_LINK, STRIPE_LIVE_SUBSCRIPTION_LINK } from '@/config/subscriptionConfig';
 import { AnalyticsAndConsent } from '@/components/AnalyticsAndConsent';
 
 interface Group {
@@ -280,11 +280,12 @@ const Index = () => {
               </div>
             </div>
             {/* Subscribe button if needed */}
-            {ALLOW_VIEW_ALL_CITIES === false && user && !subscriptionActive && (
+            {ALLOW_VIEW_ALL_CITIES === false && !subscriptionActive && (
               <a
-                href="/api/create-stripe-session"
+                href={STRIPE_TEST_MODE ? STRIPE_TEST_SUBSCRIPTION_LINK : STRIPE_LIVE_SUBSCRIPTION_LINK}
                 className="mr-2 md:mr-4 bg-brand hover:bg-brand/90 text-white font-semibold px-3 py-1.5 rounded-md shadow transition-colors text-xs md:text-base"
                 style={{ textDecoration: 'none' }}
+                target="_blank" rel="noopener noreferrer"
               >
                 Subscribe
               </a>

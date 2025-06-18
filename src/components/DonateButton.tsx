@@ -1,14 +1,11 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
-import { STRIPE_TEST_MODE } from '@/config/subscriptionConfig';
-
-const LIVE_LINK = 'https://buy.stripe.com/eVqeVeaH33P62LY1Hy7AI03';
-const TEST_LINK = 'https://buy.stripe.com/test_aFa00kg1n71i4U671S7AI01';
+import { STRIPE_TEST_MODE, STRIPE_TEST_DONATION_LINK, STRIPE_LIVE_DONATION_LINK } from '@/config/subscriptionConfig';
 
 export const DonateButton: React.FC = () => {
   const handleDonate = () => {
-    const url = STRIPE_TEST_MODE ? TEST_LINK : LIVE_LINK;
+    const url = STRIPE_TEST_MODE ? STRIPE_TEST_DONATION_LINK : STRIPE_LIVE_DONATION_LINK;
     window.open(url, '_blank');
   };
 
