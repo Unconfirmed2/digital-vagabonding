@@ -279,12 +279,22 @@ const Index = () => {
                 </Link>
               </div>
             </div>
+            {/* Subscribe button if needed */}
+            {ALLOW_VIEW_ALL_CITIES === false && user && !subscriptionActive && (
+              <a
+                href="/api/create-stripe-session"
+                className="mr-2 md:mr-4 bg-brand hover:bg-brand/90 text-white font-semibold px-3 py-1.5 rounded-md shadow transition-colors text-xs md:text-base"
+                style={{ textDecoration: 'none' }}
+              >
+                Subscribe
+              </a>
+            )}
             <MenuHeader />
           </div>
         </div>
       </header>
       {/* Spacer for fixed header */}
-      <div className="flex-1 w-full px-[5vw]" style={{ paddingTop: '80px', paddingBottom: '90px' }}>
+      <div className="flex-1 w-full px-[5vw]" style={{ paddingTop: '48px', paddingBottom: '90px' }}>
         <section className="w-full max-w-6xl mx-auto flex flex-col gap-10">
           <div className="relative w-full">
             {/* Tab notification for locked groups, only if ALLOW_VIEW_ALL_CITIES is false */}
@@ -345,51 +355,55 @@ const Index = () => {
           </div>
 
           {/* Most Popular Cities Section */}
-          <div className="w-full mb-2 flex flex-col items-center">
-            <h2 className="text-2xl font-bold text-[#064e68] mb-4">Most Popular Cities</h2>
-            <div className="w-full flex flex-row gap-4 mb-8 justify-center">
-              {topCities.map((city, idx) => {
-                // Normalize city name for matching
-                const cityKey = city.city.toLowerCase();
-                let heroImg = '/placeholder.svg';
-                if (cityKey.includes('bali')) heroImg = cityImageMap['bali'];
-                else if (cityKey.includes('medellin')) heroImg = cityImageMap['medellin'];
-                else if (cityKey.includes('mexico')) heroImg = cityImageMap['mexico city'];
-                else if (cityKey.includes('rio')) heroImg = cityImageMap['rio de janeiro'];
-                else if (cityKey.includes('tulum') || cityKey.includes('playa')) heroImg = cityImageMap['tulum'];
-                // Capitalize city name, special case for PDC/Tulum
-                let displayCity = city.city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                if (cityKey.includes('tulum') || cityKey.includes('playa')) displayCity = 'PDC/Tulum';
-                return (
-                  <div
-                    key={city.city}
-                    className={`flex-1 min-w-[120px] max-w-[200px] bg-white rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] transition-shadow duration-200 cursor-pointer border-2 p-0 ${cityFilter === city.city ? 'border-[hsl(var(--brand))]' : 'border-transparent'}`}
-                    onClick={() => {
-                      setCityFilter(cityFilter === city.city ? null : city.city);
-                      // Capitalize for search as well
-                      let searchValue = city.city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                      if (cityKey.includes('tulum') || cityKey.includes('playa')) searchValue = 'Tulum';
-                      setSearchTerm(searchValue);
-                    }}
-                    title={`Show groups in ${displayCity}`}
-                    style={{ position: 'relative', overflow: 'hidden' }}
-                  >
-                    <img
-                      src={heroImg}
-                      alt={displayCity}
-                      className="w-full h-24 object-cover"
-                      onError={e => (e.currentTarget.src = '/placeholder.svg')}
-                    />
-                    <div className="p-3 flex flex-col items-center justify-center">
-                      <span className="font-bold text-lg text-[#064e68]">{displayCity}</span>
-                      <span className="text-xs text-gray-500">{city.country}</span>
-                      <span className="text-sm font-medium text-gray-700 mt-1">{city.count} groups</span>
+          {(!searchTerm && !selectedTag && !showLikedOnly) && (
+            <div className="w-full mb-2 flex flex-col items-center">
+              <h2 className="text-2xl font-bold text-[#064e68] mb-4">Most Popular Cities</h2>
+              <div className="w-full flex flex-col md:flex-row gap-[2px] mb-8 justify-center">
+                {topCities.map((city, idx) => {
+                  // Normalize city name for matching
+                  const cityKey = city.city.toLowerCase();
+                  let heroImg = cityImageMap['bali'];
+                  if (cityKey.includes('bali')) heroImg = cityImageMap['bali'];
+                  else if (cityKey.includes('medellin')) heroImg = cityImageMap['medellin'];
+                  else if (cityKey.includes('mexico')) heroImg = cityImageMap['mexico city'];
+                  else if (cityKey.includes('rio')) heroImg = cityImageMap['rio de janeiro'];
+                  else if (cityKey.includes('tulum') || cityKey.includes('playa')) heroImg = cityImageMap['tulum'];
+                  // Capitalize city name, special case for PDC/Tulum
+                  let displayCity = city.city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                  if (cityKey.includes('tulum') || cityKey.includes('playa')) displayCity = 'PDC/Tulum';
+                  return (
+                    <div
+                      key={city.city}
+                      className={
+                        `relative w-full md:flex-1 min-w-0 max-w-none bg-white rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.12),0_0_8px_0_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.16),0_0_16px_0_rgba(0,0,0,0.14)] transition-shadow duration-200 cursor-pointer border-2 p-0 ${cityFilter === city.city ? 'border-[hsl(var(--brand))]' : 'border-transparent'} ${idx !== topCities.length - 1 ? 'mb-[2px] md:mb-0' : ''} md:max-w-[200px] overflow-hidden`
+                      }
+                      onClick={() => {
+                        setCityFilter(cityFilter === city.city ? null : city.city);
+                        let searchValue = city.city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                        if (cityKey.includes('tulum') || cityKey.includes('playa')) searchValue = 'Tulum';
+                        setSearchTerm(searchValue);
+                      }}
+                      title={`Show groups in ${displayCity}`}
+                      style={{ position: 'relative' }}
+                    >
+                      <img
+                        src={heroImg}
+                        alt={displayCity}
+                        className="w-full h-24 sm:h-20 object-cover object-center"
+                        onError={e => (e.currentTarget.src = '/placeholder.svg')}
+                      />
+                      {/* Overlay and text for all screens */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center px-2 py-1 bg-black/60 rounded-2xl">
+                        <span className="relative z-10 font-bold text-base text-white text-center drop-shadow-md">{displayCity}</span>
+                        <span className="relative z-10 text-xs text-gray-200 text-center">{city.country}</span>
+                        <span className="relative z-10 text-xs font-medium text-gray-100 mt-1 text-center">{city.count} groups</span>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Groups Grid */}
           <div className="w-full">
@@ -412,6 +426,21 @@ const Index = () => {
                     const isFreeValue = g.IsFree ?? g.isFree;
                     return typeof isFreeValue === 'string' && isFreeValue.trim().toLowerCase() !== 'yes';
                   }).length;
+                  // Group by city within this country
+                  const groupsByCity = (groupedByCountry[country] || []).reduce((acc, group) => {
+                    const city = group.City || 'Other';
+                    if (!acc[city]) acc[city] = [];
+                    acc[city].push(group);
+                    return acc;
+                  }, {} as Record<string, Group[]>);
+                  // Move 'countrywide' groups to the top, do not render a city header for them
+                  const cityKeys = Object.keys(groupsByCity);
+                  const countrywideKey = cityKeys.find(
+                    c => c.trim().toLowerCase() === 'countrywide'
+                  );
+                  const otherCities = cityKeys.filter(
+                    c => c.trim().toLowerCase() !== 'countrywide'
+                  ).sort();
                   return (
                     <div key={country} className="mb-10">
                       <div className="flex items-center gap-2 mb-4 justify-between w-full">
@@ -432,16 +461,40 @@ const Index = () => {
                           </Button>
                         )}
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {groupedByCountry[country].map((group, index) => (
-                          <GroupCard
-                            key={group.Name + group.URL + index}
-                            group={group}
-                            liked={likedGroups.includes(group.Name + group.URL)}
-                            onToggleLike={handleToggleLike}
-                          />
-                        ))}
-                      </div>
+                      {/* Render countrywide groups first, no city header */}
+                      {countrywideKey && (
+                        <div className="mb-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6 xl:gap-8 w-full">
+                            {groupsByCity[countrywideKey].map((group, index) => (
+                              <GroupCard
+                                key={group.Name + group.URL + index}
+                                group={group}
+                                liked={likedGroups.includes(group.Name + group.URL)}
+                                onToggleLike={handleToggleLike}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {/* Render other cities with city header */}
+                      {otherCities.map(city => (
+                        <div key={city} className="mb-6">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="inline-block w-5 h-5 rounded-full bg-[#e0def7] text-[#064e68] flex items-center justify-center font-bold text-xs uppercase">{city[0]}</span>
+                            <h3 className="text-lg font-semibold text-[#064e68]">{city}</h3>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6 xl:gap-8 w-full">
+                            {groupsByCity[city].map((group, index) => (
+                              <GroupCard
+                                key={group.Name + group.URL + index}
+                                group={group}
+                                liked={likedGroups.includes(group.Name + group.URL)}
+                                onToggleLike={handleToggleLike}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   );
                 })}

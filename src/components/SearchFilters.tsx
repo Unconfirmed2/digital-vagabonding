@@ -64,16 +64,13 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             <Input
               id="search"
               ref={inputRef}
-              placeholder={
-                typeof window !== 'undefined' && window.innerWidth < 768
-                  ? 'Cities, countries...'
-                  : 'Search cities, countries...'
-              }
+              placeholder="City, country"
               value={searchTerm}
               onChange={handleInputChange}
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-              className="pl-10 pr-8 text-[#1D1818] placeholder:text-[#1D1818] border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68] text-sm md:text-base"
+              className="pl-10 pr-8 text-[#1D1818] placeholder:text-[#1D1818] border border-gray-400 focus:border-gray-600 hover:border-gray-600 hover:text-[#064e68] text-sm md:text-base w-full truncate"
+              style={{ textOverflow: 'ellipsis' }}
               autoComplete="off"
             />
             {searchTerm && (
@@ -107,7 +104,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             id="tag"
             value={selectedTag}
             onChange={(e) => onTagChange(e.target.value)}
-            className="sm:text-center w-full h-10 px-3 py-2 border border-gray-400 focus:border-gray-600 hover:border-gray-600 bg-background text-sm md:text-base ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-[#1D1818] placeholder:text-[#1D1818] appearance-none"
+            className="text-start w-full h-10 px-3 py-2 border border-gray-400 focus:border-gray-600 hover:border-gray-600 bg-background text-sm md:text-base ring-offset-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-[#1D1818] placeholder:text-[#1D1818] appearance-none"
           >
             <option value="">All interests</option>
             {tags.map((tag) => (
