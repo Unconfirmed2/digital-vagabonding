@@ -1,7 +1,7 @@
 // Configuration for subscription access
 export const ALLOW_VIEW_ALL_CITIES = true; // Set to true to allow all users to view all cities
 // Toggle for test mode (set via Vite env or UI)
-export const STRIPE_TEST_MODE = import.meta.env.VITE_STRIPE_TEST_MODE === 'true';
+export const STRIPE_TEST_MODE = import.meta.env.VITE_STRIPE_TEST_MODE === 'false';
 
 // Stripe publishable keys (set via Vite env for frontend)
 export const STRIPE_PUBLISHABLE_KEY_LIVE = import.meta.env.VITE_STRIPE_PK_LIVE || '';
