@@ -21,6 +21,8 @@ interface GroupCardProps {
   group: Group;
   liked?: boolean;
   onToggleLike?: (group: Group) => void;
+  listMode?: boolean;
+  hideMeta?: boolean;
 }
 
 const platformImageMap: Record<string, string> = {
@@ -32,7 +34,7 @@ const platformImageMap: Record<string, string> = {
   internet: 'Website.png',
 };
 
-export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike }) => {
+export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike, listMode, hideMeta }) => {
   const handleJoinGroup = () => {
     if (group.URL) {
       window.open(group.URL, '_blank', 'noopener,noreferrer');
@@ -41,6 +43,51 @@ export const GroupCard: React.FC<GroupCardProps> = ({ group, liked, onToggleLike
 
   const platform = group['Link Type']?.toLowerCase() || '';
   const platformImg = platformImageMap[platform];
+
+  if (listMode) {
+    return (
+      <div className="flex flex-row items-center justify-between w-full py-2 px-2 bg-white rounded-md border border-gray-100 shadow-sm mb-1">
+        <div className="flex flex-row items-center flex-1 min-w-0 gap-2">
+          <a
+            href={group.URL || undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-base text-gray-900 truncate min-w-0 hover:underline flex items-center gap-1"
+            style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: group.URL ? 'pointer' : 'default' }}
+            title={group.Name || ''}
+          >
+            {group.Name || 'Unnamed Group'}
+          </a>
+        </div>
+        <div className="flex flex-row items-center min-w-[28px] ml-2 gap-2">
+          {platformImg && (
+            <a
+              href={group.URL || undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={group['Link Type'] || 'Platform'}
+            >
+              <img
+                src={platformImg}
+                alt={group['Link Type'] || 'Platform'}
+                className="h-5 w-5 flex-shrink-0 inline-block align-middle"
+              />
+            </a>
+          )}
+          {onToggleLike && (
+            <button
+              aria-label={liked ? 'Unlike group' : 'Like group'}
+              onClick={() => onToggleLike(group)}
+              className="focus:outline-none transition-transform transition-colors duration-150 hover:scale-110 hover:text-red-500"
+              style={{ background: 'none', border: 'none', padding: 0 }}
+            >
+              <Heart className={`h-5 w-5 ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} fill={liked ? 'currentColor' : 'none'} />
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Card className="flex flex-col h-20 w-full sm:min-w-0 sm:max-w-none md:min-w-[180px] md:max-w-[260px] bg-white rounded-lg shadow-[0_2px_8px_0_rgba(0,0,0,0.10),0_0_4px_0_rgba(0,0,0,0.08)] transition-all duration-200 border-0 relative p-2 pt-2 pb-2">
