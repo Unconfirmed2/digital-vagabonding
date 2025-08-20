@@ -62,6 +62,7 @@ export const MenuHeader: React.FC = () => {
             </>
           )}
           <Link to="/about-us" className="text-[#1D1818} hover:underline text-sm transition-colors">About Us</Link>
+          <Link to="/wiki" className="text-[#1D1818} hover:underline text-sm transition-colors">Terraforming Mars Wiki</Link>
           <a href="https://digitalvagabondingblog.wordpress.com/" target="_blank" rel="noopener noreferrer" className="text-[#1D1818} hover:underline text-sm transition-colors">Blog</a>
         </div>
       )}
